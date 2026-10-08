@@ -3,8 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#16241e">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23141715'/%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%23d0382d' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='6.5' fill='none' stroke='%231b874d' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%23d0382d'/%3E%3C/svg%3E">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#edf1ee">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#101815">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Finishquiz">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Darts finishquiz</title>
 <meta name="description" content="Leer dartscores van 51 tot 170 uitgooien met een quiz.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -109,6 +116,11 @@ ul,ol{margin:0;padding:0}
 .fish-cap{font-size:var(--fs-xs);color:var(--muted);margin-top:-6px}
 .hero-board{width:clamp(150px,44vw,270px);margin:-34px -58px -34px 0}
 .lede{max-width:56ch;color:var(--muted);font-size:1.0625rem}
+.install{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;padding:14px;border-radius:16px;border:1.5px dashed var(--line);background:var(--surface)}
+.install img{display:block;width:44px;height:44px;border-radius:10px}
+.install-txt{display:grid;gap:10px;justify-items:start;font-size:var(--fs-small);max-width:52ch}
+.install-x{border:0;background:transparent;color:var(--muted);padding:4px;margin:-4px -4px 0 0;border-radius:8px;cursor:pointer}
+.install-x:hover{color:var(--ink)}
 
 /* Pijlen als chips: triple gevuld, dubbel rood omlijnd, enkel neutraal */
 .route{display:inline-flex;flex-wrap:wrap;gap:6px;min-width:0}
@@ -760,6 +772,7 @@ function renderHome(){
     '<p class="fish-cap">De big fish: 60 + 60 + 50, de hoogste finish.</p></div>'+
     '<div class="hero-board">'+heroBoard+'</div></section>';
   html+='<p class="lede">Je staat op een score en hebt drie pijlen. Welke route brengt je precies op nul? De laatste pijl moet altijd een dubbel zijn.</p>';
+  html+=installTip();
 
   html+='<form class="setup" id="setup" novalidate>';
   html+='<fieldset><legend>Hoe wil je oefenen?</legend><div class="modes">'+
@@ -1211,6 +1224,8 @@ app.addEventListener('click',function(e){
     case 'retry': startRound(shuffle(round.qs.filter(function(q){return q.done&&!q.ok;}).map(function(q){return q.s;}))); break;
     case 'again': startRound(); break;
     case 'home': goHome(); break;
+    case 'install': if(installEvt){ var ev=installEvt; installEvt=null; ev.prompt(); (ev.userChoice||Promise.resolve()).then(function(){ render(); }); } break;
+    case 'install-x': try{ localStorage.setItem(INSTALL_KEY,'weg'); }catch(err){} render(); break;
   }
 });
 app.addEventListener('change',function(e){
@@ -1258,18 +1273,28 @@ document.addEventListener('keydown',function(e){
   if(k==='Enter'&&buf&&!onControl){ e.preventDefault(); flushBuf(); }
 });
 
-/* ---------- Start, met behoud van een lopende ronde bij een update ---------- */
-function start(data){
-  if(data&&data.view){
-    view=data.view; round=data.round||null; mod=data.mod||0;
-    if(round) round.qs.forEach(function(q){ q.pts=q.pts||[]; q.aims=q.aims||[]; });
-    if(view.screen!=='home'&&!round) view.screen='home';
-  }
-  render();
+/* ---------- Als app op je beginscherm ---------- */
+var INSTALL_KEY='darts-finishquiz-install';
+var installEvt=null;
+function isStandalone(){ try{ return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true; }catch(e){ return false; } }
+function isIOS(){ var ua=navigator.userAgent||''; return /iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); }
+function installHidden(){ try{ return localStorage.getItem(INSTALL_KEY)==='weg'; }catch(e){ return false; } }
+function installTip(){
+  if(isStandalone()||installHidden()) return '';
+  var body;
+  if(installEvt) body='<p>Zet de quiz als app op je telefoon of computer. Dan open je hem met één tik, ook zonder internet.</p><button type="button" class="btn primary" data-act="install" data-k="install">Installeren</button>';
+  else if(isIOS()) body='<p>Zet de quiz op je beginscherm. Tik in Safari op <b>Deel</b> en kies <b>Zet op beginscherm</b>. Daarna werkt hij ook zonder internet.</p>';
+  else return '';
+  return '<aside class="install" aria-label="Installeren"><img src="icons/icon-192.png" alt=""><div class="install-txt">'+body+'</div>'+
+    '<button type="button" class="install-x" data-act="install-x" data-k="install-x" aria-label="Tip verbergen">'+ICON.cross+'</button></aside>';
 }
-var hot=window.claude&&window.claude.hot;
-if(hot&&typeof hot.snapshot==='function'){ try{ hot.snapshot(function(){ return {view:view,round:round,mod:mod}; }); }catch(e){} }
-if(hot&&typeof hot.ready==='function') hot.ready(start); else start((hot&&hot.data)||{});
+window.addEventListener('beforeinstallprompt',function(e){ e.preventDefault(); installEvt=e; if(view.screen==='home') render(); });
+window.addEventListener('appinstalled',function(){ installEvt=null; if(view.screen==='home') render(); });
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){
+  window.addEventListener('load',function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+}
+
+render();
 })();
 </script>
 
