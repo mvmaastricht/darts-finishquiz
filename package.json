@@ -1,0 +1,9 @@
+{
+  "name": "darts-finishquiz",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Quiz om dartfinishes van 51 tot 170 te leren uitgooien.",
+  "scripts": {
+    "test": "node tests/logic.test.js && node tests/board.test.js"
+  }
+}

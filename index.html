@@ -1,0 +1,1277 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16241e">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23141715'/%3E%3Ccircle cx='16' cy='16' r='11' fill='none' stroke='%23d0382d' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='6.5' fill='none' stroke='%231b874d' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%23d0382d'/%3E%3C/svg%3E">
+<title>Darts finishquiz</title>
+<meta name="description" content="Leer dartscores van 51 tot 170 uitgooien met een quiz.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Big+Shoulders+Display:wght@700;800;900&display=swap">
+<style>
+/* Layout: smalle kolom. Een krijtbord is het scorebord en het enige donkere vlak; het dartbord is de held; de rest blijft licht en rustig. */
+:root{
+  --bg:#edf1ee;
+  --surface:#fbfcfb;
+  --sunk:#e0e7e2;
+  --ink:#14201a;
+  --muted:#53625a;
+  --line:#cbd5cf;
+  --red:#bf2c23;
+  --red-soft:#f6dfdb;
+  --green:#10703c;
+  --green-soft:#d8ecdf;
+  --on-ink:#fbfcfb;
+  --on-red:#ffffff;
+  --slate:#16241e;
+  --slate-edge:#2a3a33;
+  --chalk:#f2f0e7;
+  --chalk-dim:#a8b5ad;
+  --chalk-line:#4a5d53;
+  --chalk-red:#ff8070;
+  --chalk-green:#78dba4;
+  --chalk-dust:rgba(242,240,231,.07);
+  --board-edge:#121513;
+  --board-dark:#222724;
+  --board-light:#eddfbf;
+  --board-red:#d0382d;
+  --board-green:#1b874d;
+  --board-wire:#9aa29e;
+  --board-num:#f2efe5;
+  --board-mark:#ffd447;
+  --dart-barrel:#d5dadc;
+  --dart-shaft:#262c2f;
+  --dart-flight:#ea4a3d;
+  --shadow:rgba(0,0,0,.45);
+  --font-display:"Big Shoulders Display","Arial Narrow","Roboto Condensed",sans-serif;
+  --font-body:"Archivo",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --fs-score:clamp(6.5rem,30vw,9.5rem);
+  --fs-h1:clamp(2rem,8vw,3.3rem);
+  --fs-h2:1.65rem;
+  --fs-small:.9rem;
+  --fs-xs:.8rem;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#101815;--surface:#17211d;--sunk:#1f2b26;--ink:#e6ebe5;--muted:#98a79f;--line:#2c3a34;
+    --red:#ff7264;--red-soft:#3a1e1b;--green:#5bcf8d;--green-soft:#142e1e;--on-ink:#101815;--on-red:#1b0c0a;
+    --slate:#1a2a23;--slate-edge:#33473d;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101815;--surface:#17211d;--sunk:#1f2b26;--ink:#e6ebe5;--muted:#98a79f;--line:#2c3a34;
+  --red:#ff7264;--red-soft:#3a1e1b;--green:#5bcf8d;--green-soft:#142e1e;--on-ink:#101815;--on-red:#1b0c0a;
+  --slate:#1a2a23;--slate-edge:#33473d;
+  color-scheme:dark;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+ul,ol{margin:0;padding:0}
+.muted{color:var(--muted)}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+[tabindex="-1"]:focus{outline:none}
+.nw{white-space:nowrap}
+
+.wrap{max-width:620px;margin-inline:auto;padding-inline:16px;padding-block:18px 56px;display:grid;gap:26px}
+.wrap.quiz{max-width:560px;gap:16px;padding-block:12px 0}
+
+/* Krijtbord: binnen dit paneel krijgen de kleurtokens krijtwaarden, zodat chips en tekst vanzelf meekleuren */
+.slate{
+  --ink:var(--chalk);--on-ink:var(--slate);--muted:var(--chalk-dim);--line:var(--chalk-line);
+  --red:var(--chalk-red);--green:var(--chalk-green);--surface:var(--chalk-dust);
+  position:relative;overflow:hidden;color:var(--chalk);border-radius:18px;padding:18px;
+  background-color:var(--slate);
+  background-image:
+    radial-gradient(120% 90% at 12% 0%,var(--chalk-dust),transparent 60%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .14 -.05'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+  box-shadow:inset 0 0 0 1px var(--slate-edge);
+}
+.lab{font-size:var(--fs-small);color:var(--muted);font-weight:500}
+
+/* Kop en held */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;font-size:1.55rem;letter-spacing:.01em}
+.brand .board{width:34px;height:34px;margin:0}
+.tb-meta{font-family:var(--font-display);font-weight:700;font-size:1.05rem;color:var(--muted)}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;padding:24px 0 24px 20px}
+.hero-text{display:grid;gap:14px;min-width:0}
+.hero h1{font-family:var(--font-display);font-weight:800;font-size:var(--fs-h1);line-height:.95}
+.fish{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+.fish-n{font-family:var(--font-display);font-weight:900;font-size:2.1rem;line-height:1;font-variant-numeric:tabular-nums}
+.fish-cap{font-size:var(--fs-xs);color:var(--muted);margin-top:-6px}
+.hero-board{width:clamp(150px,44vw,270px);margin:-34px -58px -34px 0}
+.lede{max-width:56ch;color:var(--muted);font-size:1.0625rem}
+
+/* Pijlen als chips: triple gevuld, dubbel rood omlijnd, enkel neutraal */
+.route{display:inline-flex;flex-wrap:wrap;gap:6px;min-width:0}
+.dart{display:inline-grid;place-items:center;min-width:3.05em;height:2.05em;padding:0 .45em;border-radius:7px;border:2px solid var(--line);font-family:var(--font-display);font-weight:800;font-size:1.25rem;line-height:1;letter-spacing:.01em;font-variant-numeric:tabular-nums;color:var(--ink);background:transparent}
+.dart.t{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.dart.d{border-color:var(--red);color:var(--red)}
+.dart.miss{border-style:dashed;color:var(--muted)}
+.dart.sm{font-size:1.05rem;min-width:2.8em}
+.dart.xs{font-size:.92rem;min-width:2.7em;border-width:1.5px;border-radius:5px}
+.dart.new{animation:pop .18s ease-out}
+@keyframes pop{from{transform:scale(.85)}to{transform:none}}
+
+/* Instellingen */
+.setup{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:grid;gap:22px}
+fieldset{border:0;margin:0;padding:0;min-width:0}
+legend{padding:0;margin-bottom:10px;font-weight:600}
+.choices{display:grid;gap:8px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.modes{display:grid;gap:8px}
+.choice{position:relative;display:grid;align-content:start;gap:3px;padding:12px 14px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--bg);cursor:pointer;min-width:0;transition:border-color .12s}
+.choice input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.choice:hover{border-color:var(--muted)}
+.choice.on{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink);background:var(--surface)}
+.choice:has(input:focus-visible){outline:3px solid var(--ink);outline-offset:2px}
+.choice.off{opacity:.5}
+.choice.off,.choice.off input{cursor:not-allowed}
+.choice.wide{grid-column:1/-1}
+.choice.mode{grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:12px;padding:10px 12px}
+.m-ic{display:grid;place-items:center;width:42px;height:42px;border-radius:10px;background:var(--sunk);color:var(--ink);transition:background .12s,color .12s}
+.choice.mode.on .m-ic{background:var(--ink);color:var(--on-ink)}
+.m-svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6}
+.m-txt{display:grid;gap:1px;min-width:0}
+@media (min-width:600px){
+  .modes{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .choice.mode{grid-template-columns:1fr;row-gap:10px;padding:14px}
+}
+.c-title{font-weight:600}
+.c-num{font-family:var(--font-display);font-weight:800;font-size:1.55rem;line-height:1}
+.c-sub{font-size:var(--fs-xs);color:var(--muted)}
+.counts{display:flex;gap:8px}
+.counts .choice{width:76px;text-align:center;justify-items:center}
+.switch{position:relative;display:flex;gap:12px;align-items:flex-start;margin-top:10px;padding:12px 14px;border-radius:var(--r);border:1.5px dashed var(--line);cursor:pointer}
+.switch input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.sw-track{flex:none;position:relative;width:42px;height:24px;margin-top:2px;border-radius:12px;background:var(--line);transition:background .15s}
+.sw-track::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--surface);box-shadow:0 1px 2px var(--shadow);transition:transform .15s}
+.switch input:checked + .sw-track{background:var(--ink)}
+.switch input:checked + .sw-track::after{transform:translateX(18px)}
+.switch input:focus-visible + .sw-track{outline:3px solid var(--ink);outline-offset:2px}
+.sw-txt{display:grid;gap:2px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:var(--r);border:1.5px solid transparent;font-weight:600;cursor:pointer;background:transparent;transition:opacity .12s,border-color .12s}
+.btn.primary{background:var(--ink);color:var(--on-ink)}
+.btn.primary:hover{opacity:.9}
+.btn.line{border-color:var(--line);color:var(--ink);background:var(--surface)}
+.btn.line:hover{border-color:var(--ink)}
+.btn.ghost{color:var(--muted);padding:0 10px;min-height:40px}
+.btn.ghost:hover{color:var(--ink)}
+.btn.big{min-height:54px;font-size:1.0625rem;width:100%}
+.btn.full{width:100%}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+
+/* Finishkaart */
+.mapsec{display:grid;gap:14px}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px 16px;flex-wrap:wrap}
+.sec-head h2{font-family:var(--font-display);font-weight:800;font-size:var(--fs-h2);line-height:1}
+.tabs{display:inline-flex;gap:3px;padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.tab{border:0;background:transparent;padding:5px 12px;border-radius:7px;font-size:var(--fs-small);font-weight:600;color:var(--muted);cursor:pointer}
+.tab[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+.grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px;max-width:480px}
+.cell{aspect-ratio:1;max-width:100%;min-width:0;padding:0;border:0;border-radius:6px;background:var(--sunk);color:var(--muted);font-size:.78rem;font-weight:600;font-variant-numeric:tabular-nums;cursor:pointer}
+.cell.ok{background:var(--green-soft);color:var(--green)}
+.cell.bad{background:var(--red-soft);color:var(--red)}
+.cell.bogey{background:repeating-linear-gradient(135deg,transparent 0 4px,var(--line) 4px 5px);color:var(--muted)}
+.cell.sel{box-shadow:inset 0 0 0 2px var(--ink);color:var(--ink)}
+.detail{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;min-height:46px;padding:8px 12px;border-radius:10px;background:var(--surface);border:1px solid var(--line);font-size:var(--fs-small)}
+.detail > b{font-family:var(--font-display);font-weight:900;font-size:1.7rem;line-height:1}
+.legend{list-style:none;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:var(--fs-xs);color:var(--muted)}
+.legend li{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:4px;background:var(--sunk);display:inline-block}
+.sw.ok{background:var(--green-soft);box-shadow:inset 0 0 0 1.5px var(--green)}
+.sw.bad{background:var(--red-soft);box-shadow:inset 0 0 0 1.5px var(--red)}
+.sw.bogey{background:repeating-linear-gradient(135deg,transparent 0 3px,var(--muted) 3px 4px)}
+.routes{display:grid;gap:18px}
+.band h3{font-size:var(--fs-small);font-weight:600;color:var(--muted);margin-bottom:6px}
+.band-list{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));column-gap:16px}
+.rt{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--line);min-width:0}
+.rt > b{font-family:var(--font-display);font-weight:800;font-size:1.2rem;min-width:2.1em;font-variant-numeric:tabular-nums}
+.rt.bogey > span{font-size:var(--fs-xs);color:var(--muted)}
+.rt.bad > b{color:var(--red)}
+.rt.ok > b{color:var(--green)}
+.rules{border-top:1px solid var(--line);padding-top:14px}
+.rules summary{cursor:pointer;font-weight:600}
+.rules ul{margin-top:10px;padding-left:1.2em;display:grid;gap:6px;max-width:60ch;color:var(--muted)}
+
+/* Quiz */
+.qbar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.qbar .btn{justify-self:start;margin-left:-10px}
+.qcount{font-weight:600;font-size:var(--fs-small)}
+.qgood{justify-self:end;font-size:var(--fs-small);color:var(--muted);font-variant-numeric:tabular-nums}
+.strip{list-style:none;display:grid;gap:3px;height:6px}
+.strip li{border-radius:3px;background:var(--line)}
+.strip li.now{background:var(--ink)}
+.strip li.ok{background:var(--green)}
+.strip li.bad{background:var(--red)}
+
+.score{font-family:var(--font-display);font-weight:900;font-size:var(--fs-score);line-height:.8;letter-spacing:-.01em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.score.enter{animation:drop .26s cubic-bezier(.2,.8,.2,1)}
+@keyframes drop{from{transform:translateY(-10px);opacity:.3}to{transform:none;opacity:1}}
+.sb-big{display:grid;gap:10px;padding:20px}
+.sb-big .score{margin-top:4px}
+.sb-big .ask{color:var(--chalk);font-weight:500}
+.sb-row{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:14px;padding:16px}
+.sb-row .score{font-size:clamp(3.6rem,17vw,5.4rem);margin-block:4px 2px}
+.sb-sub{font-size:var(--fs-xs);color:var(--muted)}
+.sb-slots{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.slot{display:grid;justify-items:center;align-content:center;gap:5px;min-height:82px;padding:8px 4px;border-radius:10px;border:1.5px dashed var(--line);text-align:center;min-width:0}
+.slot.filled{border-style:solid;background:var(--surface)}
+.slot-ph{font-size:var(--fs-xs);color:var(--muted)}
+.slot-rest{font-size:var(--fs-xs);color:var(--muted);font-variant-numeric:tabular-nums;line-height:1.1}
+.slot-rest b{font-family:var(--font-display);font-weight:800;font-size:1.3rem;color:var(--ink)}
+.slot-rest.zero b{color:var(--green)}
+.slot-rest.bust b{color:var(--red)}
+.slot-aim{font-size:.72rem;color:var(--muted);line-height:1.1}
+.ask{font-weight:500}
+.ask .muted{font-weight:400}
+
+.opts{list-style:none;display:grid;gap:10px}
+.opt{width:100%;display:flex;align-items:center;gap:12px;min-height:62px;padding:10px 12px;border:1.5px solid var(--line);border-radius:var(--r);background:var(--surface);text-align:left;cursor:pointer;transition:border-color .12s,transform .12s}
+.opt:hover:not([disabled]){border-color:var(--ink);transform:translateY(-1px)}
+.opt[disabled]{cursor:default}
+.opt .k{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:7px;border:1px solid var(--line);font-size:var(--fs-xs);font-weight:600;color:var(--muted)}
+.opt .geen{font-weight:600;font-size:1.0625rem}
+.opt .dart{font-size:1.15rem;min-width:2.75em}
+.opt .tag{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-size:var(--fs-xs);font-weight:600;white-space:nowrap}
+.opt.correct{border-color:var(--green);background:var(--green-soft)}
+.opt.correct .tag{color:var(--green)}
+.opt.wrong{border-color:var(--red);background:var(--red-soft)}
+.opt.wrong .tag{color:var(--red)}
+.opt.dim{opacity:.75}
+@media (max-width:380px){.opt .tag-t{display:none}}
+.why{font-size:var(--fs-small);color:var(--muted);margin:5px 4px 0 50px}
+.ic{width:18px;height:18px;flex:none}
+
+.pad{display:grid;gap:8px}
+.mods{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mod{min-height:46px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-weight:600;cursor:pointer}
+.mod.d[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:var(--on-red)}
+.mod.t[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.nums{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.extra{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.key{min-height:50px;border-radius:9px;border:1px solid var(--line);background:var(--surface);font-family:var(--font-display);font-weight:800;font-size:1.45rem;line-height:1;cursor:pointer;font-variant-numeric:tabular-nums}
+.key small{font-size:.75em;margin-right:1px}
+.key:hover:not([disabled]){border-color:var(--ink)}
+.key:active:not([disabled]){transform:translateY(1px)}
+.key[disabled]{opacity:.35;cursor:not-allowed}
+.key.d{border-color:var(--red);color:var(--red)}
+.key.wis{font-family:var(--font-body);font-size:var(--fs-small);font-weight:600}
+.pad.m2 .nums .key{border-color:var(--red);color:var(--red)}
+.pad.m3 .nums .key{border-color:var(--ink)}
+.kbd-hint{display:none;font-size:var(--fs-xs);color:var(--muted)}
+@media (hover:hover) and (pointer:fine){.kbd-hint{display:block}}
+
+/* Speelbord */
+.playwrap{width:100%;max-width:470px;margin-inline:auto}
+.board.play{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:crosshair}
+.board-actions{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:8px}
+
+.fb{display:grid;gap:10px;padding:16px;border-radius:18px;border:1.5px solid var(--line);background:var(--surface);scroll-margin-bottom:100px;animation:rise .22s ease-out}
+.fb.ok{border-color:var(--green)}
+.fb.bad{border-color:var(--red)}
+.fb-head{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:800;font-size:1.7rem;line-height:1}
+.fb-head .ic{width:24px;height:24px}
+.fb.ok .fb-head{color:var(--green)}
+.fb.bad .fb-head{color:var(--red)}
+.fb-lines{display:grid;gap:4px;max-width:60ch}
+.aimlist{list-style:none;display:grid;gap:6px;font-size:var(--fs-small)}
+.aimlist li{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+@keyframes rise{from{transform:translateY(6px);opacity:.5}to{transform:none;opacity:1}}
+.rb{display:grid;grid-template-columns:minmax(0,1fr) min(52%,210px);grid-template-areas:"lab lab" "chips chips" "calc board";align-items:center;gap:10px 14px;margin-top:4px;padding-top:12px;border-top:1px dashed var(--line)}
+.rb-lab{grid-area:lab;font-size:var(--fs-small);font-weight:600}
+.rb-chips{grid-area:chips;min-width:0}
+.rb-calc{grid-area:calc;display:grid;gap:10px;min-width:0}
+.rb .board{grid-area:board}
+.sum,.count{font-variant-numeric:tabular-nums;font-size:var(--fs-small)}
+.sum{font-weight:600}
+.count{color:var(--muted)}
+.count > span:first-child{display:block;font-size:var(--fs-xs)}
+@media (max-width:340px){.rb{grid-template-columns:1fr;grid-template-areas:"lab" "chips" "calc" "board"}.rb .board{max-width:190px}}
+
+.nextbar{position:sticky;bottom:0;z-index:2;padding-block:12px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--bg) 72%,transparent)}
+.endpad{height:24px}
+
+/* Dartbord (ringen iets breder dan echt, zodat je ze met een vinger raakt) */
+.board{display:block;width:100%;height:auto;max-width:100%;margin-inline:auto;overflow:visible}
+.board .edge{fill:var(--board-edge);stroke:var(--line);stroke-width:2}
+.board path,.board .bl{stroke:var(--board-wire);stroke-width:.8}
+.board .dk{fill:var(--board-dark)}
+.board .lt{fill:var(--board-light)}
+.board .rd{fill:var(--board-red)}
+.board .gr{fill:var(--board-green)}
+.board.focus path:not(.hit),.board.focus .bl:not(.hit){opacity:.3}
+.board .hit,.board .aimed{stroke:var(--board-mark);stroke-width:4}
+.board .aimed{filter:brightness(1.35)}
+.board .num{fill:var(--board-num);font-family:var(--font-display);font-weight:800;font-size:26px;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.board .mk rect{fill:var(--board-mark);stroke:var(--board-edge);stroke-width:3}
+.board .mk text{fill:var(--board-edge);font-family:var(--font-display);font-weight:900;font-size:24px;text-anchor:middle;dominant-baseline:central}
+.board .pd{filter:drop-shadow(3px 4px 2px var(--shadow));pointer-events:none}
+.board .pd .hole{fill:var(--board-edge)}
+.board .pd .barrel{stroke:var(--dart-barrel);stroke-width:6;stroke-linecap:round;fill:none}
+.board .pd .grip{stroke:var(--dart-shaft);stroke-width:6;stroke-dasharray:1.5 2.5;fill:none}
+.board .pd .shaft{stroke:var(--dart-shaft);stroke-width:3;stroke-linecap:round;fill:none}
+.board .pd .flight{fill:var(--dart-flight);stroke:var(--board-edge);stroke-width:1.2}
+.board .pd-in.new{animation:thunk .2s cubic-bezier(.3,1.4,.5,1)}
+@keyframes thunk{from{transform:scale(1.7);opacity:.2}to{transform:none;opacity:1}}
+.board .aimpt{pointer-events:none}
+.board .aimpt circle{fill:none;stroke:var(--board-mark);stroke-width:2.5;stroke-dasharray:4 3}
+.board .aimpt line{stroke:var(--board-mark);stroke-width:2;stroke-dasharray:3 4;opacity:.8}
+.board .aimtag{pointer-events:none}
+.board .aimtag rect{fill:var(--board-mark);stroke:var(--board-edge);stroke-width:3}
+.board .aimtag .at-l{fill:var(--board-edge);font-family:var(--font-display);font-weight:900;font-size:30px;text-anchor:middle;dominant-baseline:central}
+.board .aimtag .at-v{fill:var(--board-edge);font-family:var(--font-body);font-weight:600;font-size:15px;text-anchor:middle;dominant-baseline:central}
+
+/* Uitslag */
+.res{display:grid;gap:10px;padding:22px}
+.bigres{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px}
+.bigres b{font-family:var(--font-display);font-weight:900;font-size:var(--fs-score);line-height:.8;font-variant-numeric:tabular-nums}
+.bigres span{font-family:var(--font-display);font-weight:800;font-size:2rem;color:var(--muted)}
+.verdict{font-size:1.0625rem;max-width:50ch}
+.review{list-style:none;display:grid}
+.rv{display:grid;grid-template-columns:3.2rem minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.rv-s{font-family:var(--font-display);font-weight:800;font-size:1.6rem;line-height:1;font-variant-numeric:tabular-nums}
+.rv-main{display:grid;gap:4px;font-size:var(--fs-small);min-width:0}
+.rv-main .route{gap:4px}
+.rv-mark{display:grid;place-items:center;width:28px;height:28px;border-radius:50%}
+.rv.ok .rv-mark{color:var(--green);background:var(--green-soft)}
+.rv.bad .rv-mark{color:var(--red);background:var(--red-soft)}
+.actions{display:grid;gap:10px}
+.actions .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<main id="app"></main>
+<noscript><p style="padding:16px">Deze quiz werkt alleen met JavaScript aan.</p></noscript>
+
+<script>
+(function(){
+'use strict';
+
+/*LOGIC-START*/
+var ORDER=[20,1,18,4,13,6,10,15,2,17,3,19,7,16,8,11,14,9,12,5];
+var ROUTES={170:'T20 T20 Bull',167:'T20 T19 Bull',164:'T20 T18 Bull',161:'T20 T17 Bull',160:'T20 T20 D20',158:'T20 T20 D19',157:'T20 T19 D20',156:'T20 T20 D18',155:'T20 T19 D19',154:'T20 T18 D20',153:'T20 T19 D18',152:'T20 T20 D16',151:'T20 T17 D20',150:'T20 T18 D18',149:'T20 T19 D16',148:'T20 T16 D20',147:'T20 T17 D18',146:'T20 T18 D16',145:'T20 T15 D20',144:'T20 T20 D12',143:'T20 T17 D16',142:'T20 T14 D20',141:'T20 T19 D12',140:'T20 T20 D10',139:'T20 T13 D20',138:'T20 T18 D12',137:'T20 T19 D10',136:'T20 T20 D8',135:'T20 T17 D12',134:'T20 T14 D16',133:'T20 T19 D8',132:'T20 T16 D12',131:'T20 T13 D16',130:'T20 T20 D5',129:'T19 T16 D12',128:'T18 T14 D16',127:'T20 T17 D8',126:'T19 T19 D6',125:'25 T20 D20',124:'T20 T16 D8',123:'T19 T16 D9',122:'T18 T18 D7',121:'T20 T11 D14',120:'T20 20 D20',119:'T19 T12 D13',118:'T20 18 D20',117:'T20 17 D20',116:'T20 16 D20',115:'T20 15 D20',114:'T20 14 D20',113:'T20 13 D20',112:'T20 12 D20',111:'T20 19 D16',110:'T20 Bull',109:'T20 9 D20',108:'T20 16 D16',107:'T19 Bull',106:'T20 10 D18',105:'T20 13 D16',104:'T18 Bull',103:'T19 10 D18',102:'T20 10 D16',101:'T17 Bull',100:'T20 D20',99:'T19 10 D16',98:'T20 D19',97:'T19 D20',96:'T20 D18',95:'T19 D19',94:'T18 D20',93:'T19 D18',92:'T20 D16',91:'T17 D20',90:'T20 D15',89:'T19 D16',88:'T20 D14',87:'T17 D18',86:'T18 D16',85:'T15 D20',84:'T20 D12',83:'T17 D16',82:'Bull D16',81:'T19 D12',80:'T20 D10',79:'T19 D11',78:'T18 D12',77:'T19 D10',76:'T20 D8',75:'T17 D12',74:'T14 D16',73:'T19 D8',72:'T16 D12',71:'T13 D16',70:'T10 D20',69:'T19 D6',68:'T20 D4',67:'T17 D8',66:'T10 D18',65:'25 D20',64:'T16 D8',63:'T13 D12',62:'T10 D16',61:'25 D18',60:'20 D20',59:'19 D20',58:'18 D20',57:'17 D20',56:'16 D20',55:'15 D20',54:'14 D20',53:'13 D20',52:'12 D20',51:'11 D20'};
+var MIN_S=51, MAX_S=170;
+var RANGES={'51-100':[51,100],'101-140':[101,140],'141-170':[141,170],'alles':[51,170]};
+var NEAR_BOGEY=[158,160,161,164,167,170];
+
+function dart(m,n){return {m:m,n:n};}
+function val(d){return d.m*d.n;}
+function isDbl(d){return d.m===2;}
+function exists(d){return (d.n>=1&&d.n<=20&&d.m>=1&&d.m<=3)||(d.n===25&&(d.m===1||d.m===2));}
+function label(d){
+  if(d.m===0) return 'Mis';
+  if(d.n===25) return d.m===2?'Bull':(d.m===3?'T25':'25');
+  return d.m===1?String(d.n):(d.m===2?'D':'T')+d.n;
+}
+function parseDart(t){
+  if(/^bull$/i.test(t)) return dart(2,25);
+  var m=/^([SDT]?)(\d+)$/i.exec(t);
+  if(!m) throw new Error('Onbekende pijl: '+t);
+  var p=m[1].toUpperCase();
+  return dart(p==='T'?3:p==='D'?2:1,+m[2]);
+}
+function parseRoute(s){return s.trim().split(/\s+/).map(parseDart);}
+function keyOf(r){return r.map(label).join(' ');}
+function sumOf(r){return r.reduce(function(a,d){return a+val(d);},0);}
+
+var REAL=[];
+for(var n0=1;n0<=20;n0++){REAL.push(dart(1,n0),dart(2,n0),dart(3,n0));}
+REAL.push(dart(1,25),dart(2,25));
+var DOUBLES=REAL.filter(isDbl);
+
+// minDarts[s]: minste aantal pijlen om s uit te gooien (9 = niet in drie pijlen)
+var LIMIT=180;
+var minDarts=[];
+for(var i0=0;i0<=LIMIT;i0++) minDarts.push(9);
+DOUBLES.forEach(function(d){minDarts[val(d)]=1;});
+for(var k0=2;k0<=3;k0++){
+  for(var s0=2;s0<=LIMIT;s0++){
+    if(minDarts[s0]<k0) continue;
+    for(var j0=0;j0<REAL.length;j0++){
+      var r0=s0-val(REAL[j0]);
+      if(r0>=2&&minDarts[r0]<=k0-1){minDarts[s0]=k0;break;}
+    }
+  }
+}
+function canFinish(s,k){return s>=2&&s<=LIMIT&&minDarts[s]<=k;}
+function isBogey(s){return !canFinish(s,3);}
+
+function shuffle(a){
+  a=a.slice();
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+
+// Controleer een route: pijlen bestaan, max 3, telt op tot s, laatste pijl dubbel
+function check(route,s){
+  if(!route.length) return {ok:false,reason:'leeg'};
+  if(route.length>3) return {ok:false,reason:'vier'};
+  for(var i=0;i<route.length;i++){ if(!exists(route[i])) return {ok:false,reason:'bestaat',dart:route[i]}; }
+  var sum=sumOf(route);
+  if(sum!==s) return {ok:false,reason:'som',sum:sum};
+  var last=route[route.length-1];
+  if(!isDbl(last)) return {ok:false,reason:'geenDubbel',dart:last};
+  return {ok:true};
+}
+function reasonText(c,s){
+  switch(c.reason){
+    case 'vier': return 'Dat zijn vier pijlen. Je hebt er maar drie.';
+    case 'bestaat': return c.dart.n===25 ? label(c.dart)+' bestaat niet. De bull telt 25 of 50, een triple bull is er niet.' : label(c.dart)+' bestaat niet. Het bord gaat tot 20.';
+    case 'som': var d=c.sum-s; return 'Samen '+c.sum+', dat is '+Math.abs(d)+' te '+(d>0?'veel':'weinig')+'.';
+    case 'geenDubbel': return 'Je eindigt op '+label(c.dart)+'. De laatste pijl moet een dubbel zijn.';
+  }
+  return '';
+}
+
+// Stand na de gegooide pijlen
+function throwEval(s,darts){
+  var rest=s;
+  for(var i=0;i<darts.length;i++){
+    var d=darts[i]; rest-=val(d);
+    var left=2-i;
+    if(rest===0) return isDbl(d)?{done:true,ok:true,rest:0}:{done:true,ok:false,why:'geenDubbel',dart:d,rest:0};
+    if(rest<0) return {done:true,ok:false,why:'onder',rest:rest};
+    if(rest===1) return {done:true,ok:false,why:'een',rest:1};
+    if(!canFinish(rest,left)) return {done:true,ok:false,why:left===0?'op':'kanNiet',rest:rest,left:left};
+  }
+  return {done:false,rest:rest};
+}
+// Is mikken op doel t een goede keuze bij deze rest en dit aantal pijlen?
+function aimCheck(rest,t,left){
+  var r=rest-val(t);
+  if(r===0) return isDbl(t)?{ok:true}:{ok:false,why:'geenDubbel'};
+  if(r<0) return {ok:false,why:'onder'};
+  if(r===1) return {ok:false,why:'een'};
+  if(!canFinish(r,left-1)) return {ok:false,why:left-1===0?'op':'kanNiet',r:r,left:left-1};
+  return {ok:true};
+}
+
+// Bordgeometrie. Echte maten in mm, het getekende bord heeft bredere ringen.
+var G={ib:16,ob:36,ti:92,to:124,di:160,dO:196};
+var RB=[0,6.35,15.9,99,107,162,170];
+var DB=[0,G.ib,G.ob,G.ti,G.to,G.di,G.dO];
+function mapR(r,from,to){
+  for(var i=1;i<from.length;i++){ if(r<=from[i]) return to[i-1]+(r-from[i-1])*(to[i]-to[i-1])/(from[i]-from[i-1]); }
+  return to[to.length-1]+(r-from[from.length-1]);
+}
+function toDisp(p){var r=Math.hypot(p.x,p.y); if(!r) return {x:0,y:0}; var k=mapR(r,RB,DB)/r; return {x:p.x*k,y:p.y*k};}
+function toReal(p){var r=Math.hypot(p.x,p.y); if(!r) return {x:0,y:0}; var k=mapR(r,DB,RB)/r; return {x:p.x*k,y:p.y*k};}
+function regionAt(p,B){
+  var r=Math.hypot(p.x,p.y);
+  if(r<=B[1]) return dart(2,25);
+  if(r<=B[2]) return dart(1,25);
+  if(r>B[6]) return dart(0,0);
+  var a=Math.atan2(p.x,-p.y)*180/Math.PI;
+  var n=ORDER[Math.floor((((a+9)%360)+360)%360/18)%20];
+  if(r<=B[3]) return dart(1,n);
+  if(r<=B[4]) return dart(3,n);
+  if(r<=B[5]) return dart(1,n);
+  return dart(2,n);
+}
+function regionAtDisp(p){return regionAt(p,DB);}
+function regionAtReal(p){return regionAt(p,RB);}
+function centerPoint(d){
+  if(d.n===25) return d.m===2?{x:0,y:0}:{x:0,y:-(G.ib+G.ob)/2};
+  var a=ORDER.indexOf(d.n)*18*Math.PI/180;
+  var r=d.m===3?(G.ti+G.to)/2:(d.m===2?(G.di+G.dO)/2:(G.to+G.di)/2);
+  return {x:r*Math.sin(a),y:-r*Math.cos(a)};
+}
+function gauss(){var u=1-Math.random(),v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+var SIGMA=9; // spreiding in mm, ongeveer een goede caféspeler
+function scatter(dispPt){
+  var a=toReal(dispPt);
+  var l={x:a.x+gauss()*SIGMA,y:a.y+gauss()*SIGMA};
+  var pt=toDisp(l), rr=Math.hypot(pt.x,pt.y);
+  if(rr>226){pt={x:pt.x*226/rr,y:pt.y*226/rr};}
+  return {hit:regionAtReal(l),pt:pt};
+}
+
+// Foute antwoorden voor meerkeuze. Elke kandidaat wordt gecontroleerd, alleen ongeldige routes blijven over.
+function candSom(correct){
+  var out=[];
+  correct.forEach(function(d,i){
+    if(d.n===25) return;
+    [1,-1,2,-2,3,-3].forEach(function(dn){
+      var n=d.n+dn; if(n<1||n>20) return;
+      var r=correct.slice(); r[i]=dart(d.m,n); out.push(r);
+    });
+  });
+  return shuffle(out);
+}
+function candNear(s){
+  var out=[];
+  shuffle([1,-1,2,-2,3,-3,4,-4,5,-5,6,-6]).forEach(function(dl){ if(ROUTES[s+dl]) out.push(parseRoute(ROUTES[s+dl])); });
+  return out;
+}
+function candGeenDubbel(s,correct){
+  var out=[], last=correct[correct.length-1], head=correct.slice(0,-1);
+  if(last.m===2&&last.n<=20&&correct.length<=2) out.push(head.concat([dart(1,last.n),dart(1,last.n)]));
+  if(last.m===2&&last.n<=10) out.push(head.concat([dart(1,last.n*2)]));
+  if(last.m===2&&last.n===25&&correct.length<=2) out.push(head.concat([dart(1,25),dart(1,25)]));
+  if(correct.length>=2) out.push([last].concat(head));
+  var first=correct[0], found=[];
+  for(var n=20;n>=1;n--){
+    [dart(3,n),dart(1,n)].forEach(function(b){
+      var r=s-val(first)-val(b);
+      if(r>=1&&r<=20) found.push([first,b,dart(1,r)]);
+    });
+  }
+  for(var m=1;m<=20;m++){ if(val(first)+3*m===s) found.push([first,dart(3,m)]); }
+  return shuffle(out).concat(shuffle(found));
+}
+function candBestaat(s){
+  var two=[], three=[], fakeD=[21,22,23,24].map(function(n){return dart(2,n);}), T25=dart(3,25);
+  for(var n=20;n>=1;n--){
+    [dart(3,n),dart(1,n)].forEach(function(a){ fakeD.forEach(function(f){ if(val(a)+val(f)===s) two.push([a,f]); }); });
+  }
+  DOUBLES.forEach(function(d){ if(75+val(d)===s) two.push([T25,d]); });
+  [dart(3,20),dart(3,19)].forEach(function(a){
+    fakeD.forEach(function(f){
+      for(var n=20;n>=1;n--){ [dart(3,n),dart(1,n)].forEach(function(b){ if(val(a)+val(b)+val(f)===s) three.push([a,b,f]); }); }
+    });
+  });
+  [20,16,18,12,10,8,25].forEach(function(k){
+    var d=dart(2,k);
+    for(var n=20;n>=10;n--){ if(75+3*n+val(d)===s) three.push([T25,dart(3,n),d]); }
+  });
+  return shuffle(two).concat(shuffle(three));
+}
+function candVier(s){
+  var out=[];
+  [[dart(3,20),dart(3,20)],[dart(3,20),dart(3,19)],[dart(3,19),dart(3,19)]].forEach(function(p){
+    [20,16,18,12,10,8].forEach(function(k){
+      var x=s-val(p[0])-val(p[1])-2*k;
+      if(x>=1&&x<=20) out.push([p[0],p[1],dart(1,x),dart(2,k)]);
+    });
+  });
+  return shuffle(out);
+}
+function makeMC(s){
+  var bogey=isBogey(s);
+  var correct=bogey?null:parseRoute(ROUTES[s]);
+  var pools={
+    som: correct?candSom(correct):[],
+    near: candNear(s),
+    geen: correct?candGeenDubbel(s,correct):[],
+    bestaat: candBestaat(s),
+    vier: (bogey||s>=151)?candVier(s):[]
+  };
+  var decoy=!bogey&&s>=141&&Math.random()<(NEAR_BOGEY.indexOf(s)>=0?0.6:0.3);
+  var need=decoy?2:3;
+  var seen={}; if(correct) seen[keyOf(correct)]=1;
+  var picks=[];
+  function take(t){
+    var list=pools[t];
+    for(var i=0;i<list.length;i++){
+      var r=list[i], k=keyOf(r);
+      if(seen[k]) continue;
+      var c=check(r,s);
+      if(c.ok) continue;
+      seen[k]=1; picks.push({route:r,c:c}); return true;
+    }
+    return false;
+  }
+  var plan;
+  if(bogey) plan=shuffle(['near','bestaat','vier']).concat(['near','vier','bestaat','near']);
+  else { var x=Math.random(); plan=['som','geen',x<0.45?'near':(x<0.7?'bestaat':'som'),'near','som','geen','bestaat']; }
+  plan.forEach(function(t){ if(picks.length<need) take(t); });
+  ['near','som','geen','bestaat','vier'].forEach(function(t){ while(picks.length<need&&take(t)){} });
+  var options=picks.map(function(p){return {kind:'route',route:p.route,ok:false,why:reasonText(p.c,s)};});
+  if(decoy) options.push({kind:'geen',ok:false,why:'Deze score kun je wel uitgooien, bijvoorbeeld met '+ROUTES[s]+'.'});
+  options.push(bogey?{kind:'geen',ok:true,why:''}:{kind:'route',route:correct,ok:true,why:''});
+  return shuffle(options);
+}
+
+function wsample(arr,k,w){
+  var a=arr.slice(), out=[];
+  while(out.length<k&&a.length){
+    var tot=0; a.forEach(function(x){tot+=w(x);});
+    var r=Math.random()*tot, i=0;
+    for(;i<a.length-1;i++){ r-=w(a[i]); if(r<0) break; }
+    out.push(a.splice(i,1)[0]);
+  }
+  return out;
+}
+function foutList(stats){
+  return Object.keys(stats).map(Number).filter(function(s){return stats[s]&&stats[s].l===0&&s>=MIN_S&&s<=MAX_S;});
+}
+function pickQuestions(range,count,stats){
+  var pool=[];
+  if(range==='fouten') pool=foutList(stats);
+  else { var b=RANGES[range]||RANGES['51-100']; for(var s=b[0];s<=b[1];s++) pool.push(s); }
+  var bog=pool.filter(isBogey), fin=pool.filter(function(s){return !isBogey(s);});
+  var nb;
+  if(range==='fouten') nb=Math.min(bog.length,count);
+  else nb=Math.min(bog.length,Math.max(bog.length?1:0,Math.round(count*bog.length/pool.length)),count>=20?3:2);
+  var w=function(s){var st=stats[s]; return !st?3:(st.l===0?4:1);};
+  var pb=wsample(bog,nb,w);
+  var pf=wsample(fin,Math.min(fin.length,count-pb.length),w);
+  return shuffle(pb.concat(pf));
+}
+/*LOGIC-END*/
+
+/* ---------- Opslag (alleen in deze browser) ---------- */
+var STORE_KEY='darts-finishquiz-v1';
+function loadStore(){
+  var s=null;
+  try{ s=JSON.parse(localStorage.getItem(STORE_KEY)); }catch(e){ s=null; }
+  if(!s||typeof s!=='object') s={};
+  s.settings=Object.assign({mode:'mc',range:'51-100',count:10,spread:false},s.settings||{});
+  s.stats=s.stats&&typeof s.stats==='object'?s.stats:{};
+  return s;
+}
+var store=loadStore();
+function saveStore(){ try{ localStorage.setItem(STORE_KEY,JSON.stringify(store)); }catch(e){} }
+
+var FINISHABLE=0; for(var q0=MIN_S;q0<=MAX_S;q0++){ if(!isBogey(q0)) FINISHABLE++; }
+var BOGEYS=[]; for(var q1=MIN_S;q1<=MAX_S;q1++){ if(isBogey(q1)) BOGEYS.push(q1); }
+var BOGEY_LINE='Tot en met 170 geldt dat voor '+BOGEYS.slice(0,-1).join(', ')+' en '+BOGEYS[BOGEYS.length-1]+'.';
+var BUST={geenDubbel:1,onder:1,een:1};
+
+/* ---------- Staat ---------- */
+var app=document.getElementById('app');
+var view={screen:'home',mapTab:'kaart',mapSel:null};
+var round=null;
+var mod=0;          // 0 = enkel, 2 = dubbel, 3 = triple
+var justThrew=false;
+var shown={key:null,val:null};
+var reduceMotion=false;
+try{ reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+
+/* ---------- Bouwstenen ---------- */
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function chip(d,cls){var t=d.m===0?'s miss':(d.m===3?'t':(d.m===2?'d':'s'));return '<span class="dart '+t+(cls?' '+cls:'')+'">'+label(d)+'</span>';}
+function chips(r,cls){return '<span class="route">'+r.map(function(d){return chip(d,cls);}).join('')+'</span>';}
+function routeText(r){return r.map(label).join(' ');}
+function plural(n,one,more){return n===1?one:more;}
+function f1(x){return (+x).toFixed(1);}
+
+var ICON={
+  check:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  cross:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>',
+  mc:'<svg class="m-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="4.5" rx="1.5"/><rect x="3.5" y="9.75" width="17" height="4.5" rx="1.5"/><rect x="3.5" y="16" width="17" height="4.5" rx="1.5"/></svg>',
+  keys:'<svg class="m-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="5" height="5" rx="1.2"/><rect x="9.5" y="3.5" width="5" height="5" rx="1.2"/><rect x="15.5" y="3.5" width="5" height="5" rx="1.2"/><rect x="3.5" y="9.5" width="5" height="5" rx="1.2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1.2"/><rect x="15.5" y="9.5" width="5" height="5" rx="1.2"/><rect x="3.5" y="15.5" width="5" height="5" rx="1.2"/><rect x="9.5" y="15.5" width="5" height="5" rx="1.2"/><rect x="15.5" y="15.5" width="5" height="5" rx="1.2"/></svg>',
+  board:'<svg class="m-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.8"/></svg>'
+};
+
+/* Dartbord als SVG */
+function polar(r,deg){var a=deg*Math.PI/180;return f1(r*Math.cos(a))+','+f1(r*Math.sin(a));}
+function sector(r1,r2,a0,a1){
+  return 'M'+polar(r1,a0)+'L'+polar(r2,a0)+'A'+r2+' '+r2+' 0 0 1 '+polar(r2,a1)+'L'+polar(r1,a1)+'A'+r1+' '+r1+' 0 0 0 '+polar(r1,a0)+'Z';
+}
+function keyFor(d){ if(d.m===0) return null; if(d.n===25) return d.m===2?'ib':'ob'; return (d.m===3?'t':d.m===2?'d':'s')+d.n; }
+function dartG(p,isNew,sc){
+  return '<g class="pd" transform="translate('+f1(p.x)+' '+f1(p.y)+') scale('+(sc||1.4)+')"><g class="pd-in'+(isNew?' new':'')+'">'+
+    '<circle class="hole" r="3.5"/><path class="barrel" d="M2 -3L14 -20"/><path class="grip" d="M5 -7.5L12 -17.5"/>'+
+    '<path class="shaft" d="M14 -20L23 -33"/><path class="flight" d="M21 -30L35 -32L33 -47L19 -43Z"/></g></g>';
+}
+function boardSVG(o){
+  o=o||{};
+  var route=o.route||null, hits={};
+  if(route) route.forEach(function(d,i){var k=keyFor(d); if(k) (hits[k]=hits[k]||[]).push(i+1);});
+  var focus=!!(route&&route.length);
+  var base=[], top=[];
+  function put(k,html){(focus&&hits[k]?top:base).push(html);}
+  function cls(k,c){return c+(focus&&hits[k]?' hit':'');}
+  ORDER.forEach(function(n,i){
+    var c=-90+i*18, a0=c-9, a1=c+9, even=i%2===0;
+    var single=even?'dk':'lt', ring=even?'rd':'gr';
+    put('s'+n,'<path data-k="s'+n+'" class="'+cls('s'+n,single)+'" d="'+sector(G.ob,G.ti,a0,a1)+'"/>');
+    put('t'+n,'<path data-k="t'+n+'" class="'+cls('t'+n,ring)+'" d="'+sector(G.ti,G.to,a0,a1)+'"/>');
+    put('s'+n,'<path data-k="s'+n+'" class="'+cls('s'+n,single)+'" d="'+sector(G.to,G.di,a0,a1)+'"/>');
+    put('d'+n,'<path data-k="d'+n+'" class="'+cls('d'+n,ring)+'" d="'+sector(G.di,G.dO,a0,a1)+'"/>');
+  });
+  var bulls='<circle data-k="ob" class="bl '+cls('ob','gr')+'" r="'+G.ob+'"/><circle data-k="ib" class="bl '+cls('ib','rd')+'" r="'+G.ib+'"/>';
+  var nums='';
+  if(!o.mini){
+    ORDER.forEach(function(n,i){var p=polar(214,-90+i*18).split(','); nums+='<text class="num" x="'+p[0]+'" y="'+p[1]+'">'+n+'</text>';});
+  }
+  var marks='';
+  Object.keys(hits).forEach(function(k){
+    var d=k==='ib'?dart(2,25):(k==='ob'?dart(1,25):dart(k[0]==='t'?3:(k[0]==='d'?2:1),+k.slice(1)));
+    var p=centerPoint(d);
+    if(k==='ob'&&hits.ib) p={x:0,y:-40};
+    var txt=hits[k].join('·'), w=30+(txt.length-1)*11;
+    marks+='<g class="mk" transform="translate('+f1(p.x)+' '+f1(p.y)+')"><rect x="'+(-w/2)+'" y="-15" width="'+w+'" height="30" rx="15"/><text y="1">'+txt+'</text></g>';
+  });
+  var aims='';
+  (o.aims||[]).forEach(function(a,i){
+    var land=(o.darts||[])[i]; if(!land) return;
+    aims+='<g class="aimpt"><line x1="'+f1(a.x)+'" y1="'+f1(a.y)+'" x2="'+f1(land.x)+'" y2="'+f1(land.y)+'"/><circle cx="'+f1(a.x)+'" cy="'+f1(a.y)+'" r="8"/></g>';
+  });
+  var darts=(o.darts||[]).map(function(p,i){return dartG(p,o.newLast&&i===o.darts.length-1,o.dartScale);}).join('');
+  var tag=o.interactive?'<g class="aimtag" style="display:none"><rect x="-46" y="-30" width="92" height="60" rx="14"/><text class="at-l" y="-7">T20</text><text class="at-v" y="17">60</text></g>':'';
+  var a11y=o.decor?' aria-hidden="true"':' role="img" aria-label="'+esc(o.aria||'Dartbord')+'"';
+  return '<svg class="board'+(focus?' focus':'')+(o.interactive?' play':'')+'" viewBox="-236 -236 472 472"'+a11y+'>'+
+    '<circle class="edge" r="232"/><g class="segs">'+base.join('')+top.join('')+bulls+'</g>'+nums+aims+marks+darts+tag+'</svg>';
+}
+
+function routeBlock(s,r,title){
+  var rest=s, steps=[s];
+  r.forEach(function(d){rest-=val(d);steps.push(rest);});
+  var countHtml=steps.map(function(x,i){return '<span class="nw">'+x+(i<steps.length-1?' →':'')+'</span>';}).join(' ');
+  return '<div class="rb"><div class="rb-lab">'+esc(title)+'</div><div class="rb-chips">'+chips(r)+'</div>'+
+    '<div class="rb-calc"><div class="sum"><span class="nw">'+r.map(val).join(' + ')+'</span> <span class="nw">= '+sumOf(r)+'</span></div>'+
+    '<div class="count"><span>Aftellen</span>'+countHtml+'</div></div>'+
+    boardSVG({route:r,aria:'Dartbord met '+routeText(r)+' gemarkeerd'})+'</div>';
+}
+
+/* ---------- Statistiek ---------- */
+function statSummary(){
+  var g=0,f=0;
+  Object.keys(store.stats).forEach(function(k){var s=+k; if(s<MIN_S||s>MAX_S) return; if(store.stats[k].l===1) g++; else f++;});
+  return {g:g,f:f};
+}
+
+/* ---------- Startscherm ---------- */
+function renderHome(){
+  var st=store.settings;
+  var fouten=foutList(store.stats).length;
+  if(st.range==='fouten'&&!fouten) st.range='51-100';
+  var sum=statSummary();
+
+  function radio(name,value,inner,on,extraCls,disabled){
+    var id=name+'-'+value;
+    return '<label class="choice'+(on?' on':'')+(extraCls?' '+extraCls:'')+(disabled?' off':'')+'" for="'+id+'"><input type="radio" name="'+name+'" id="'+id+'" value="'+value+'"'+(on?' checked':'')+(disabled?' disabled':'')+'>'+inner+'</label>';
+  }
+  var modes=[['mc','Meerkeuze','Kies de goede route uit vier.',ICON.mc],['throw','Zelf gooien','Tik je pijlen in op een toetsenbord.',ICON.keys],['board','Op het bord','Mik met je vinger, zoals bij echt darten.',ICON.board]];
+  var ranges=[['51-100','51-100','Vaak in twee pijlen'],['101-140','101-140','Meestal drie pijlen'],['141-170','141-170','Ook scores zonder finish'],['alles','Alles','Van 51 tot 170']];
+  var heroBoard=boardSVG({decor:true,dartScale:2.1,darts:[{x:-8,y:-110},{x:7,y:-104},{x:3,y:2}]});
+
+  var html='<div class="wrap">';
+  html+='<header class="topbar"><div class="brand">'+boardSVG({mini:true,decor:true})+'<span>Finishquiz</span></div><span class="tb-meta">51 tot 170</span></header>';
+  html+='<section class="slate hero"><div class="hero-text"><h1>Leer uitgooien van 51 tot 170</h1>'+
+    '<div class="fish"><span class="fish-n">170</span>'+chips(parseRoute(ROUTES[170]),'xs')+'</div>'+
+    '<p class="fish-cap">De big fish: 60 + 60 + 50, de hoogste finish.</p></div>'+
+    '<div class="hero-board">'+heroBoard+'</div></section>';
+  html+='<p class="lede">Je staat op een score en hebt drie pijlen. Welke route brengt je precies op nul? De laatste pijl moet altijd een dubbel zijn.</p>';
+
+  html+='<form class="setup" id="setup" novalidate>';
+  html+='<fieldset><legend>Hoe wil je oefenen?</legend><div class="modes">'+
+    modes.map(function(m){return radio('mode',m[0],'<span class="m-ic">'+m[3]+'</span><span class="m-txt"><span class="c-title">'+m[1]+'</span><span class="c-sub">'+m[2]+'</span></span>',st.mode===m[0],'mode');}).join('')+'</div>';
+  if(st.mode==='board'){
+    html+='<label class="switch" for="spread"><input type="checkbox" id="spread" name="spread"'+(st.spread?' checked':'')+'><span class="sw-track"></span>'+
+      '<span class="sw-txt"><span class="c-title">Met spreiding</span><span class="c-sub">Je pijl landt niet altijd waar je mikt. Mis je, dan reken je opnieuw. Je keuzes tellen, niet je geluk.</span></span></label>';
+  }
+  html+='</fieldset>';
+  html+='<fieldset><legend>Welke scores?</legend><div class="choices">'+
+    ranges.map(function(r){return radio('range',r[0],'<span class="c-num">'+r[1]+'</span><span class="c-sub">'+r[2]+'</span>',st.range===r[0]);}).join('')+
+    radio('range','fouten','<span class="c-title">Mijn fouten</span><span class="c-sub">'+(fouten?fouten+' '+plural(fouten,'score','scores')+' die je laatst fout had':'Nog geen fouten')+'</span>',st.range==='fouten','wide',!fouten)+
+    '</div></fieldset>';
+  html+='<fieldset><legend>Hoeveel vragen?</legend><div class="counts">'+
+    [10,20].map(function(c){return radio('count',String(c),'<span class="c-num">'+c+'</span>',st.count===c);}).join('')+'</div></fieldset>';
+  html+='<button type="submit" class="btn primary big" data-k="start">Start de quiz</button></form>';
+
+  var line;
+  if(!sum.g&&!sum.f) line='Nog niets geoefend. Na elke vraag kleurt de kaart mee.';
+  else line=sum.g+' van de '+FINISHABLE+' finishes laatst goed, '+sum.f+' laatst fout.';
+  if(store.last&&store.last.n) line+=' Vorige ronde: '+store.last.g+' van '+store.last.n+' goed.';
+  html+='<section class="mapsec" aria-labelledby="map-h"><div class="sec-head"><h2 id="map-h">Jouw finishkaart</h2>'+
+    '<div class="tabs"><button type="button" class="tab" data-act="tab" data-tab="kaart" data-k="tab-kaart" aria-pressed="'+(view.mapTab==='kaart')+'">Kaart</button>'+
+    '<button type="button" class="tab" data-act="tab" data-tab="lijst" data-k="tab-lijst" aria-pressed="'+(view.mapTab==='lijst')+'">Alle routes</button></div></div>'+
+    '<p class="muted">'+line+'</p>';
+  html+=view.mapTab==='lijst'?routesList():mapGrid();
+  html+='</section>';
+
+  html+='<details class="rules"><summary>Spelregels in het kort</summary><ul>'+
+    '<li>Je hebt drie pijlen per beurt.</li>'+
+    '<li>De laatste pijl moet een dubbel zijn. De bull (50) telt ook als dubbel.</li>'+
+    '<li>Kom je onder nul, hou je 1 over of eindig je niet op een dubbel? Dan is het bust. Je score gaat terug naar de stand van voor je beurt.</li>'+
+    '<li>Sommige scores kun je niet in drie pijlen uitgooien. '+BOGEY_LINE+'</li>'+
+    '<li>T is triple (3 keer), D is dubbel (2 keer). 25 is de buitenste ring van de roos, Bull de binnenste (50).</li>'+
+    '</ul></details>';
+  html+='</div>';
+  return html;
+}
+
+function mapGrid(){
+  var cells='';
+  for(var s=MIN_S;s<=MAX_S;s++){
+    var b=isBogey(s), st=store.stats[s];
+    var cls=b?'bogey':(st?(st.l===1?'ok':'bad'):'');
+    var state=b?', geen finish':(st?(st.l===1?', laatst goed':', laatst fout'):'');
+    cells+='<button type="button" class="cell '+cls+(view.mapSel===s?' sel':'')+'" data-act="cell" data-s="'+s+'" data-k="cell-'+s+'" aria-label="'+s+state+'">'+s+'</button>';
+  }
+  var det, s1=view.mapSel;
+  if(!s1) det='<span class="muted">Tik op een score om de route te zien.</span>';
+  else if(isBogey(s1)) det='<b>'+s1+'</b><span>Geen finish. Dit kun je niet in drie pijlen uitgooien.</span>';
+  else {
+    var st1=store.stats[s1];
+    det='<b>'+s1+'</b>'+chips(parseRoute(ROUTES[s1]),'sm')+'<span class="muted">'+(st1?st1.g+' keer goed, '+st1.f+' keer fout':'Nog niet geoefend')+'</span>';
+  }
+  return '<div class="grid" role="group" aria-label="Scores 51 tot 170">'+cells+'</div>'+
+    '<div class="detail" aria-live="polite">'+det+'</div>'+
+    '<ul class="legend"><li><i class="sw ok"></i>Laatst goed</li><li><i class="sw bad"></i>Laatst fout</li><li><i class="sw"></i>Nog niet geoefend</li><li><i class="sw bogey"></i>Geen finish</li></ul>';
+}
+
+function routesList(){
+  var bands=[[51,100],[101,140],[141,170]];
+  return '<div class="routes">'+bands.map(function(b){
+    var items='';
+    for(var s=b[0];s<=b[1];s++){
+      var st=store.stats[s];
+      if(isBogey(s)) items+='<li class="rt bogey"><b>'+s+'</b><span>geen finish</span></li>';
+      else items+='<li class="rt'+(st?(st.l===1?' ok':' bad'):'')+'"><b>'+s+'</b>'+chips(parseRoute(ROUTES[s]),'xs')+'</li>';
+    }
+    return '<div class="band"><h3>'+b[0]+' tot '+b[1]+'</h3><ul class="band-list">'+items+'</ul></div>';
+  }).join('')+'</div>';
+}
+
+/* ---------- Quizscherm ---------- */
+function cur(){return round.qs[round.i];}
+function restNow(q){var r=q.s; q.darts.forEach(function(d){r-=val(d);}); return r;}
+
+function scoreboard(q){
+  var key=round.i;
+  if(round.mode==='mc'){
+    return '<section class="slate sb sb-big" tabindex="-1" id="score-focus" aria-label="Je staat op '+q.s+'"><div class="lab">Je staat op</div>'+
+      '<div class="score" data-key="'+key+'" data-val="'+q.s+'">'+q.s+'</div><p class="ask">Welke route gooit dit uit?</p></section>';
+  }
+  var showVal, lab='Je staat op';
+  if(q.geen) showVal=q.s;
+  else if(q.done&&q.finished){ showVal=0; lab='Uitgegooid'; }
+  else if(q.done&&q.ev&&BUST[q.ev.why]){ showVal=q.s; lab='Bust'; }
+  else showVal=restNow(q);
+  var sub=q.darts.length?'Startscore '+q.s:(q.done?'':'Nog 3 pijlen');
+  if(lab==='Bust') sub='Terug naar '+q.s;
+  var slots='', rest=q.s;
+  for(var i=0;i<3;i++){
+    var d=q.darts[i];
+    if(d){
+      rest-=val(d);
+      var fin=rest===0&&isDbl(d), bust=!fin&&rest<=1;
+      var isNew=justThrew&&i===q.darts.length-1;
+      var aim=q.aims[i];
+      slots+='<li class="slot filled">'+chip(d,'sm'+(isNew?' new':''))+
+        '<span class="slot-rest'+(fin?' zero':(bust?' bust':''))+'">nog <b>'+rest+'</b></span>'+
+        (aim&&keyOf([aim.t])!==keyOf([d])?'<span class="slot-aim">mikte '+label(aim.t)+'</span>':'')+'</li>';
+    } else slots+='<li class="slot"><span class="slot-ph">Pijl '+(i+1)+'</span></li>';
+  }
+  return '<section class="slate sb sb-row" tabindex="-1" id="score-focus" aria-label="'+lab+' '+showVal+'">'+
+    '<div class="sb-score"><div class="lab">'+lab+'</div><div class="score" data-key="'+key+'" data-val="'+showVal+'">'+showVal+'</div><div class="sb-sub">'+sub+'</div></div>'+
+    '<ol class="sb-slots" aria-label="Jouw pijlen">'+slots+'</ol></section>';
+}
+
+function renderQuiz(){
+  var q=cur(), n=round.qs.length;
+  var goed=round.qs.filter(function(x){return x.done&&x.ok;}).length;
+  var html='<div class="wrap quiz">';
+  html+='<header class="qbar"><button type="button" class="btn ghost" data-act="stop" data-k="stop">Stop</button>'+
+    '<div class="qcount">Vraag '+(round.i+1)+' van '+n+'</div><div class="qgood">'+goed+' goed</div></header>';
+  html+='<ol class="strip" aria-hidden="true" style="grid-template-columns:repeat('+n+',minmax(0,1fr))">'+
+    round.qs.map(function(x,i){return '<li class="'+(x.done?(x.ok?'ok':'bad'):'')+(i===round.i&&!x.done?' now':'')+'"></li>';}).join('')+'</ol>';
+  html+=scoreboard(q);
+  if(round.mode==='mc') html+=mcBlock(q);
+  else if(round.mode==='throw') html+=throwBlock(q);
+  else html+=boardBlock(q);
+  if(q.done){
+    html+=feedback(q);
+    html+='<div class="nextbar"><button type="button" class="btn primary big" data-act="next" data-k="next">'+(round.i<n-1?'Volgende vraag':'Bekijk de uitslag')+'</button></div>';
+  } else html+='<div class="endpad"></div>';
+  html+='</div>';
+  return html;
+}
+
+function mcBlock(q){
+  return '<ol class="opts">'+q.options.map(function(o,i){
+    var cls='', tag='';
+    if(q.done){
+      if(o.ok){cls='correct';tag='<span class="tag">'+ICON.check+'<span class="tag-t">Goed</span></span>';}
+      else if(q.chosen===i){cls='wrong';tag='<span class="tag">'+ICON.cross+'<span class="tag-t">Jouw keuze</span></span>';}
+      else cls='dim';
+    }
+    var content=o.kind==='geen'?'<span class="geen">Geen finish mogelijk</span>':chips(o.route);
+    var why=q.done&&!o.ok?'<div class="why">'+esc(o.why)+'</div>':'';
+    return '<li><button type="button" class="opt '+cls+'" data-act="pick" data-i="'+i+'" data-k="opt-'+i+'"'+(q.done?' disabled':'')+
+      ' aria-label="Optie '+(i+1)+': '+(o.kind==='geen'?'Geen finish mogelijk':routeText(o.route))+'"><span class="k" aria-hidden="true">'+(i+1)+'</span>'+content+tag+'</button>'+why+'</li>';
+  }).join('')+'</ol>';
+}
+
+function throwBlock(q){
+  if(q.done) return '';
+  var pre=mod===3?'T':(mod===2?'D':'');
+  var keys='';
+  for(var n=1;n<=20;n++){
+    keys+='<button type="button" class="key" data-act="num" data-n="'+n+'" data-k="num-'+n+'" aria-label="'+(mod===3?'Triple ':mod===2?'Dubbel ':'')+n+'">'+(pre?'<small>'+pre+'</small>':'')+n+'</button>';
+  }
+  return '<p class="ask">Gooi dit uit in maximaal drie pijlen.</p>'+
+    '<section class="pad'+(mod?' m'+mod:'')+'" aria-label="Pijl invoeren">'+
+    '<div class="mods"><button type="button" class="mod d" data-act="mod" data-m="2" data-k="mod-2" aria-pressed="'+(mod===2)+'">Dubbel</button>'+
+    '<button type="button" class="mod t" data-act="mod" data-m="3" data-k="mod-3" aria-pressed="'+(mod===3)+'">Triple</button></div>'+
+    '<div class="nums">'+keys+'</div>'+
+    '<div class="extra"><button type="button" class="key" data-act="b25" data-k="b25"'+(mod===3?' disabled':'')+'>'+(mod===2?'Bull':'25')+'</button>'+
+    '<button type="button" class="key d" data-act="bull" data-k="bull">Bull</button>'+
+    '<button type="button" class="key wis" data-act="undo" data-k="undo"'+(q.darts.length?'':' disabled')+'>Wis</button></div>'+
+    (round.allowGeen?'<button type="button" class="btn line full" data-act="geen" data-k="geen">Geen finish mogelijk</button>':'')+
+    '<p class="kbd-hint">Toetsenbord: typ t20, d16 of b voor de bull. Backspace wist de laatste pijl.</p></section>';
+}
+
+function boardBlock(q){
+  var spread=round.spread;
+  var html='';
+  if(!q.done) html+='<p class="ask">'+(spread?'Mik op het bord en laat los om te gooien. <span class="muted">Je pijl kan ernaast landen.</span>':'Raak het bord aan en laat los om te gooien. <span class="muted">Schuif om bij te sturen.</span>')+'</p>';
+  html+='<div class="playwrap">'+boardSVG({interactive:!q.done,darts:q.pts,newLast:justThrew,aims:spread?q.aims.map(function(a){return a.pt;}):null,aria:'Dartbord om op te mikken'})+'</div>';
+  if(!q.done){
+    var btns='';
+    if(!spread) btns+='<button type="button" class="btn line" data-act="undo" data-k="undo"'+(q.darts.length?'':' disabled')+'>Wis laatste pijl</button>';
+    if(round.allowGeen) btns+='<button type="button" class="btn line" data-act="geen" data-k="geen">Geen finish mogelijk</button>';
+    if(btns) html+='<div class="board-actions">'+btns+'</div>';
+    html+='<p class="kbd-hint">Toetsenbord kan ook: typ t20, d16 of b voor de bull.</p>';
+  }
+  return html;
+}
+
+function throwMsg(ev){
+  switch(ev.why){
+    case 'geenDubbel': return 'Je komt op nul met '+label(ev.dart)+', maar dat is geen dubbel.';
+    case 'onder': return 'Je gaat '+(-ev.rest)+' onder nul.';
+    case 'een': return 'Je houdt 1 over. Dat kun je niet uitgooien.';
+    case 'kanNiet': return 'Je staat op '+ev.rest+' met nog '+ev.left+' '+plural(ev.left,'pijl','pijlen')+'. Dat kun je niet meer uitgooien.';
+    case 'op': return 'Na drie pijlen sta je nog op '+ev.rest+'.';
+  }
+  return '';
+}
+function aimMsg(a){
+  var t=label(a.t), r=a.rest, c=a.c;
+  switch(c.why){
+    case 'geenDubbel': return 'Mikken op '+t+' bij '+r+' eindigt niet op een dubbel.';
+    case 'onder': return 'Mikken op '+t+' bij '+r+' is te veel. Je gaat onder nul.';
+    case 'een': return 'Mikken op '+t+' bij '+r+' laat 1 over. Dat kun je niet uitgooien.';
+    case 'kanNiet': return 'Mikken op '+t+' bij '+r+' laat '+c.r+' over met nog '+c.left+' '+plural(c.left,'pijl','pijlen')+'. Dat kun je niet uitgooien.';
+    case 'op': return 'Mikken op '+t+' bij '+r+' laat '+c.r+' over, maar dan zijn je pijlen op.';
+  }
+  return '';
+}
+
+function feedback(q){
+  var s=q.s, bogey=isBogey(s), std=bogey?null:parseRoute(ROUTES[s]);
+  var head, lines=[], show=null, title='Zo gooi je '+s+' uit', extra='';
+  var spread=round.mode==='board'&&round.spread;
+  if(round.mode==='mc'){
+    head=q.ok?'Goed':'Fout';
+    if(bogey){ lines.push(s+' kun je niet in drie pijlen uitgooien.'); lines.push(BOGEY_LINE); }
+    else show=std;
+  } else if(q.geen){
+    head=q.ok?'Goed':'Fout';
+    if(bogey){ lines.push('Klopt, '+s+' kun je niet in drie pijlen uitgooien.'); lines.push(BOGEY_LINE); }
+    else { lines.push('Deze score kun je wel uitgooien.'); show=std; }
+  } else if(spread&&q.aimErr){
+    head='Fout';
+    lines.push(aimMsg(q.aimErr));
+    if(bogey) lines.push(s+' kun je niet in drie pijlen uitgooien. Kies dan Geen finish mogelijk.');
+    else show=std;
+  } else if(q.finished){
+    head='Uitgegooid';
+    var min=minDarts[s];
+    if(q.darts.length>min) lines.push('Goed gedaan. Het kan ook in '+min+' '+plural(min,'pijl','pijlen')+': '+ROUTES[s]+'.');
+    else if(keyOf(q.darts)!==ROUTES[s]) lines.push('Veel gebruikt is ook '+ROUTES[s]+'.');
+    show=q.darts; title='Jouw route';
+  } else if(spread){
+    head='Goed gemikt';
+    lines.push('Je keuzes klopten, maar de pijl landde ernaast.');
+    if(q.ev) lines.push(throwMsg(q.ev));
+  } else {
+    var ev=q.ev;
+    head=BUST[ev.why]?'Bust':'Niet uitgegooid';
+    lines.push(throwMsg(ev));
+    if(bogey) lines.push(s+' kun je niet in drie pijlen uitgooien. Kies dan Geen finish mogelijk.');
+    else show=std;
+  }
+  if(spread&&q.aims.length){
+    extra='<ol class="aimlist">'+q.aims.map(function(a,i){return '<li><span class="muted">Pijl '+(i+1)+'</span> mikte '+chip(a.t,'xs')+' raakte '+chip(q.darts[i],'xs')+'</li>';}).join('')+'</ol>';
+  }
+  return '<section class="fb '+(q.ok?'ok':'bad')+'" aria-live="polite"><div class="fb-head">'+(q.ok?ICON.check:ICON.cross)+head+'</div>'+
+    (lines.length?'<div class="fb-lines">'+lines.map(function(l){return '<p>'+esc(l)+'</p>';}).join('')+'</div>':'')+
+    extra+(show?routeBlock(s,show,title):'')+'</section>';
+}
+
+function renderResult(){
+  var done=round.qs.filter(function(q){return q.done;});
+  var g=done.filter(function(q){return q.ok;}).length, n=done.length;
+  var wrong=done.filter(function(q){return !q.ok;});
+  var pct=n?g/n:0;
+  var verdict=pct===1?'Foutloos. Probeer eens een hogere reeks.':(pct>=0.8?'Sterk gegooid.':(pct>=0.5?'Op de goede weg. Oefen je fouten nog een keer.':'Blijf oefenen. Kijk bij elke fout goed naar de route.'));
+  var rows=done.map(function(q){
+    var given;
+    if(round.mode==='mc'){ var o=q.options[q.chosen]; given=o.kind==='geen'?'Geen finish mogelijk':routeText(o.route); }
+    else if(q.geen) given='Geen finish mogelijk';
+    else {
+      given=routeText(q.darts)+(q.ev&&BUST[q.ev.why]?' (bust)':'');
+      if(q.aims.length&&q.aims.some(function(a,i){return keyOf([a.t])!==keyOf([q.darts[i]]);})) given+=', gemikt: '+q.aims.map(function(a){return label(a.t);}).join(' ');
+    }
+    var right=isBogey(q.s)?'<span>Geen finish mogelijk</span>':chips(parseRoute(ROUTES[q.s]),'xs');
+    return '<li class="rv '+(q.ok?'ok':'bad')+'"><b class="rv-s">'+q.s+'</b><div class="rv-main"><div><span class="muted">Jij:</span> '+esc(given)+'</div>'+
+      (q.ok?'':'<div><span class="muted">Route:</span> '+right+'</div>')+'</div>'+
+      '<span class="rv-mark" role="img" aria-label="'+(q.ok?'Goed':'Fout')+'">'+(q.ok?ICON.check:ICON.cross)+'</span></li>';
+  }).join('');
+  var html='<div class="wrap">';
+  html+='<header class="topbar"><div class="brand">'+boardSVG({mini:true,decor:true})+'<span>Finishquiz</span></div><span class="tb-meta">Uitslag</span></header>';
+  html+='<section class="slate res" tabindex="-1" id="result-focus"><div class="lab">Uitslag</div><div class="bigres"><b>'+g+'</b><span>van '+n+' goed</span></div><p class="verdict">'+verdict+'</p></section>';
+  html+='<ul class="review" aria-label="Jouw antwoorden">'+rows+'</ul>';
+  html+='<div class="actions">'+(wrong.length?'<button type="button" class="btn primary big" data-act="retry" data-k="retry">Oefen deze '+wrong.length+' '+plural(wrong.length,'fout','fouten')+' opnieuw</button>':'')+
+    '<div class="row"><button type="button" class="btn line" data-act="again" data-k="again">Nieuwe ronde</button><button type="button" class="btn line" data-act="home" data-k="home">Naar start</button></div></div>';
+  html+='</div>';
+  return html;
+}
+
+/* ---------- Render, focus en aftel-animatie ---------- */
+function render(){
+  var ae=document.activeElement, keep=null;
+  if(ae&&ae!==document.body&&app.contains(ae)) keep={id:ae.id,k:ae.getAttribute('data-k')};
+  app.innerHTML=view.screen==='quiz'?renderQuiz():(view.screen==='result'?renderResult():renderHome());
+  justThrew=false;
+  if(keep){
+    var el=keep.id?document.getElementById(keep.id):(keep.k?app.querySelector('[data-k="'+keep.k+'"]'):null);
+    if(el&&!el.disabled) el.focus({preventScroll:true});
+  }
+  afterRender();
+}
+function afterRender(){
+  var el=app.querySelector('.score[data-val]');
+  if(!el){ shown={key:null,val:null}; return; }
+  var key=el.getAttribute('data-key'), to=+el.getAttribute('data-val');
+  if(!reduceMotion){
+    if(shown.key!==key) el.classList.add('enter');
+    else if(shown.val!==null&&shown.val!==to) tween(el,shown.val,to);
+  }
+  shown={key:key,val:to};
+}
+function tween(el,a,b){
+  var t0=performance.now(), dur=420;
+  function step(t){
+    if(!el.isConnected) return;
+    var p=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-p,3);
+    el.textContent=String(Math.round(a+(b-a)*e));
+    if(p<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+function toTop(){ window.scrollTo(0,0); }
+function focusEl(id){ var el=document.getElementById(id); if(el) el.focus({preventScroll:true}); }
+function revealFeedback(){
+  var fb=app.querySelector('.fb'); if(!fb) return;
+  var r=fb.getBoundingClientRect();
+  if(r.bottom>window.innerHeight-90||r.top<0) fb.scrollIntoView({block:'nearest',behavior:reduceMotion?'auto':'smooth'});
+}
+
+/* ---------- Acties ---------- */
+function startRound(list){
+  var st=store.settings;
+  var range=st.range;
+  if(range==='fouten'&&!foutList(store.stats).length) range='51-100';
+  var qs=list||pickQuestions(range,st.count,store.stats);
+  if(!qs.length) return;
+  round={mode:st.mode,spread:st.mode==='board'&&!!st.spread,range:range,i:0,allowGeen:qs.some(function(s){return s>=141;}),
+    qs:qs.map(function(s){return {s:s,done:false,ok:false,finished:false,darts:[],pts:[],aims:[],chosen:null,geen:false,ev:null,aimErr:null,options:st.mode==='mc'?makeMC(s):null};})};
+  mod=0; view.screen='quiz';
+  render(); toTop(); focusEl('score-focus');
+}
+function record(q){
+  var st=store.stats[q.s]||{g:0,f:0,l:0};
+  if(q.ok){st.g++;st.l=1;} else {st.f++;st.l=0;}
+  store.stats[q.s]=st; saveStore();
+}
+function answerMC(i){
+  var q=cur(); if(q.done||!q.options[i]) return;
+  q.chosen=i; q.done=true; q.ok=!!q.options[i].ok;
+  record(q); render(); revealFeedback();
+}
+// Een pijl gooien. Bij spreiding landt de pijl rond het mikpunt en tellen de keuzes.
+function throwInput(target,dispPt){
+  var q=cur(); if(q.done||q.darts.length>=3) return;
+  var rest=restNow(q), left=3-q.darts.length;
+  var hit=target, pt=dispPt||centerPoint(target);
+  var spread=round.mode==='board'&&round.spread;
+  var aimBad=false;
+  if(spread){
+    var ac=aimCheck(rest,target,left);
+    var sc=scatter(pt);
+    q.aims.push({t:target,pt:pt,c:ac,rest:rest});
+    hit=sc.hit; pt=sc.pt;
+    if(!ac.ok){ aimBad=true; q.aimErr=q.aims[q.aims.length-1]; }
+  }
+  q.darts.push(hit); q.pts.push(pt); mod=0; justThrew=true;
+  var ev=throwEval(q.s,q.darts);
+  if(aimBad){ q.done=true; q.ok=false; q.finished=false; q.ev=ev.done?ev:null; record(q); }
+  else if(ev.done){ q.done=true; q.ev=ev; q.finished=ev.ok; q.ok=spread?true:ev.ok; record(q); }
+  render();
+  if(q.done){ focusEl('score-focus'); revealFeedback(); }
+}
+function undo(){
+  var q=cur(); if(q.done||!q.darts.length||round.spread) return;
+  q.darts.pop(); q.pts.pop(); render();
+}
+function pressGeen(){
+  var q=cur(); if(q.done) return;
+  q.done=true; q.geen=true; q.ok=isBogey(q.s);
+  record(q); render(); revealFeedback();
+}
+function nextQ(){
+  if(round.i<round.qs.length-1){ round.i++; mod=0; render(); toTop(); focusEl('score-focus'); }
+  else finishRound();
+}
+function finishRound(){
+  var done=round.qs.filter(function(q){return q.done;});
+  store.last={g:done.filter(function(q){return q.ok;}).length,n:done.length}; saveStore();
+  view.screen='result'; render(); toTop(); focusEl('result-focus');
+}
+function stopRound(){
+  if(round.qs.some(function(q){return q.done;})) finishRound();
+  else { round=null; view.screen='home'; render(); toTop(); }
+}
+function goHome(){ round=null; view.screen='home'; render(); toTop(); }
+
+/* ---------- Mikken op het bord ---------- */
+var aim={active:false,svg:null,key:null};
+function svgPoint(svg,e){
+  var m=svg.getScreenCTM(); if(!m) return {x:999,y:999};
+  var p=svg.createSVGPoint(); p.x=e.clientX; p.y=e.clientY;
+  var q=p.matrixTransform(m.inverse()); return {x:q.x,y:q.y};
+}
+function aimClear(svg){
+  if(!svg) return;
+  Array.prototype.forEach.call(svg.querySelectorAll('.aimed'),function(el){el.classList.remove('aimed');});
+  var tag=svg.querySelector('.aimtag'); if(tag) tag.style.display='none';
+  aim.key=null;
+}
+function aimUpdate(svg,e){
+  var p=svgPoint(svg,e), t=regionAtDisp(p), k=keyFor(t);
+  if(k!==aim.key){
+    Array.prototype.forEach.call(svg.querySelectorAll('.aimed'),function(el){el.classList.remove('aimed');});
+    if(k){
+      var segs=svg.querySelector('.segs');
+      Array.prototype.forEach.call(svg.querySelectorAll('[data-k="'+k+'"]'),function(el){el.classList.add('aimed'); if(el.tagName.toLowerCase()==='path') segs.insertBefore(el,segs.querySelector('.bl'));});
+    }
+    aim.key=k;
+  }
+  var tag=svg.querySelector('.aimtag'); if(!tag) return;
+  if(!k){ tag.style.display='none'; return; }
+  var tx=Math.max(-180,Math.min(180,p.x)), ty=p.y-78;
+  if(ty<-200) ty=p.y+78;
+  tag.setAttribute('transform','translate('+f1(tx)+' '+f1(ty)+')');
+  tag.querySelector('.at-l').textContent=label(t);
+  tag.querySelector('.at-v').textContent=val(t)+' punten';
+  tag.style.display='';
+}
+function playSvg(e){ return e.target&&e.target.closest?e.target.closest('svg.play'):null; }
+app.addEventListener('pointerdown',function(e){
+  var svg=playSvg(e); if(!svg||!round||cur().done) return;
+  if(e.button!==undefined&&e.button>0) return;
+  e.preventDefault();
+  try{ svg.setPointerCapture(e.pointerId); }catch(err){}
+  aim.active=true; aim.svg=svg; aimUpdate(svg,e);
+});
+app.addEventListener('pointermove',function(e){
+  if(aim.active){ aimUpdate(aim.svg,e); return; }
+  if(e.pointerType!=='mouse') return;
+  var svg=app.querySelector('svg.play'); if(!svg) return;
+  if(playSvg(e)===svg) aimUpdate(svg,e); else if(aim.key) aimClear(svg);
+});
+app.addEventListener('pointerup',function(e){
+  if(!aim.active) return;
+  var svg=aim.svg; aim.active=false;
+  var p=svgPoint(svg,e), t=regionAtDisp(p);
+  aimClear(svg);
+  if(t.m===0) return; // los naast het bord: niet gooien
+  throwInput(t,p);
+});
+app.addEventListener('pointercancel',function(){ if(aim.active){ aim.active=false; aimClear(aim.svg); } });
+
+/* ---------- Events ---------- */
+app.addEventListener('click',function(e){
+  var b=e.target.closest('[data-act]'); if(!b||b.disabled) return;
+  var act=b.getAttribute('data-act');
+  switch(act){
+    case 'pick': answerMC(+b.getAttribute('data-i')); break;
+    case 'next': nextQ(); break;
+    case 'stop': stopRound(); break;
+    case 'mod': var m=+b.getAttribute('data-m'); mod=mod===m?0:m; render(); break;
+    case 'num': throwInput(dart(mod||1,+b.getAttribute('data-n'))); break;
+    case 'b25': throwInput(mod===2?dart(2,25):dart(1,25)); break;
+    case 'bull': throwInput(dart(2,25)); break;
+    case 'undo': undo(); break;
+    case 'geen': pressGeen(); break;
+    case 'tab': view.mapTab=b.getAttribute('data-tab'); render(); break;
+    case 'cell': var s=+b.getAttribute('data-s'); view.mapSel=view.mapSel===s?null:s; render(); break;
+    case 'retry': startRound(shuffle(round.qs.filter(function(q){return q.done&&!q.ok;}).map(function(q){return q.s;}))); break;
+    case 'again': startRound(); break;
+    case 'home': goHome(); break;
+  }
+});
+app.addEventListener('change',function(e){
+  var t=e.target; if(!t||!t.name) return;
+  if(t.name==='mode'||t.name==='range'||t.name==='count'){
+    store.settings[t.name]=t.name==='count'?+t.value:t.value;
+    saveStore(); render();
+  } else if(t.name==='spread'){
+    store.settings.spread=t.checked; saveStore(); render();
+  }
+});
+app.addEventListener('submit',function(e){ e.preventDefault(); startRound(); });
+
+// Toetsenbord: 1-4 kiest in meerkeuze; bij gooien t/d/s, cijfers, b voor bull, Backspace wist
+var buf='', bufTimer=null;
+function typed(d){ throwInput(d, round.mode==='board'?centerPoint(d):null); }
+function flushBuf(){
+  clearTimeout(bufTimer); if(!buf) return;
+  var n=+buf; buf='';
+  if(n>=1&&n<=20) typed(dart(mod||1,n));
+  else if(n===25&&mod!==3) typed(dart(mod===2?2:1,25));
+}
+document.addEventListener('keydown',function(e){
+  if(e.metaKey||e.ctrlKey||e.altKey) return;
+  if(view.screen!=='quiz'||!round) return;
+  var q=cur(), k=e.key;
+  var onControl=e.target&&e.target.closest&&e.target.closest('button,input,select,textarea,summary,a');
+  if(q.done){
+    if((k==='Enter'||k===' ')&&!onControl){ e.preventDefault(); nextQ(); }
+    return;
+  }
+  if(round.mode==='mc'){
+    if(/^[1-4]$/.test(k)){ e.preventDefault(); answerMC(+k-1); }
+    return;
+  }
+  var kl=k.toLowerCase();
+  if(kl==='t'||kl==='d'||kl==='s'){ e.preventDefault(); buf=''; clearTimeout(bufTimer); mod=kl==='t'?(mod===3?0:3):kl==='d'?(mod===2?0:2):0; render(); return; }
+  if(kl==='b'){ e.preventDefault(); buf=''; typed(dart(2,25)); return; }
+  if(k==='Backspace'){ e.preventDefault(); if(buf){ buf=''; clearTimeout(bufTimer); } else undo(); return; }
+  if(/^[0-9]$/.test(k)){
+    e.preventDefault(); buf+=k; clearTimeout(bufTimer);
+    if(buf.length===1&&(k==='1'||k==='2')) bufTimer=setTimeout(flushBuf,650); else flushBuf();
+    return;
+  }
+  if(k==='Enter'&&buf&&!onControl){ e.preventDefault(); flushBuf(); }
+});
+
+/* ---------- Start, met behoud van een lopende ronde bij een update ---------- */
+function start(data){
+  if(data&&data.view){
+    view=data.view; round=data.round||null; mod=data.mod||0;
+    if(round) round.qs.forEach(function(q){ q.pts=q.pts||[]; q.aims=q.aims||[]; });
+    if(view.screen!=='home'&&!round) view.screen='home';
+  }
+  render();
+}
+var hot=window.claude&&window.claude.hot;
+if(hot&&typeof hot.snapshot==='function'){ try{ hot.snapshot(function(){ return {view:view,round:round,mod:mod}; }); }catch(e){} }
+if(hot&&typeof hot.ready==='function') hot.ready(start); else start((hot&&hot.data)||{});
+})();
+</script>
+
+</body>
+</html>
