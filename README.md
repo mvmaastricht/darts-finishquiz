@@ -9,6 +9,8 @@ Een quiz om dartscores van 51 tot 170 te leren uitgooien. De hele quiz staat in 
 - **Meerkeuze:** kies de goede route uit vier. De foute opties zijn altijd echt fout, met uitleg waarom.
 - **Zelf gooien:** tik je pijlen in. Elke route die klopt telt als goed. Bust werkt zoals in het echt.
 - **Op het bord:** mik met je vinger of muis op een dartbord. Met spreiding aan landt je pijl niet altijd waar je mikt. Dan tellen je keuzes, niet je geluk.
+- **Rekenen:** oefen dubbels (keer 2), triples (keer 3), terugzoeken (51 is welke triple?), een beurt optellen en de rest uitrekenen. Met meerkeuze, zelf intikken of een sprint van 1 minuut. Elk fout antwoord hoort bij een veelgemaakte fout, en de uitleg zegt welke (bijvoorbeeld: "Dat is dubbel 17. Een triple is keer 3."). Daarna volgt de uitwerking, zoals T17 = 30 + 21 = 51.
+- **Tafelkaart en spiekbriefje:** houdt per dubbel en triple bij of je hem laatst goed had. Op het spiekbriefje kun je de uitkomsten verbergen om jezelf te overhoren.
 - **Finishkaart:** houdt per score bij of je hem laatst goed of fout had. Met "Mijn fouten" oefen je alleen die scores.
 - Scores zonder finish (159, 162, 163, 165, 166, 168, 169) komen ook voor. Dan is "Geen finish mogelijk" het goede antwoord.
 
@@ -49,6 +51,7 @@ De tests lezen de logica uit `index.html` en controleren onder andere:
 - dat elke meerkeuzevraag precies één goed antwoord heeft;
 - de regels voor bust en geen finish;
 - de herkenning van vakken op het getekende bord en de spreiding;
+- dat elke rekenvraag het goede antwoord heeft, precies één goede optie en uitleg bij elke fout;
 - het manifest, de iconen en de bestanden die offline beschikbaar moeten zijn.
 
 ## Bestanden
@@ -62,4 +65,5 @@ De tests lezen de logica uit `index.html` en controleren onder andere:
 
 - Routes: het object `ROUTES` in `index.html`.
 - Spreiding: `SIGMA` (in millimeters, standaard 9).
+- Rekenvragen: de functies `qTri`, `qDub`, `qTerug`, `qBeurt` en `qRest` in `index.html`. Daar staan ook de veelgemaakte fouten met hun uitleg.
 - Kleuren en lettertypes: de variabelen bovenaan in de `<style>`.

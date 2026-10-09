@@ -1,5 +1,5 @@
 // Offline werken: de app zelf staat in de cache, nieuwe versies komen binnen zodra je online bent.
-const CACHE = 'finishquiz-v2';
+const CACHE = 'finishquiz-v3';
 const CORE = [
   './',
   './index.html',

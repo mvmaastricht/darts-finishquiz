@@ -359,6 +359,78 @@ legend{padding:0;margin-bottom:10px;font-weight:600}
 .actions{display:grid;gap:10px}
 .actions .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
+/* Onderdelen: uitgooien en rekenen */
+.sections{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.sec{min-height:44px;border:0;border-radius:10px;background:transparent;font-weight:600;color:var(--muted);cursor:pointer}
+.sec:hover{color:var(--ink)}
+.sec[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+.fish .eq{font-family:var(--font-display);font-weight:800;font-size:1.7rem;line-height:1;color:var(--muted)}
+
+/* Rekentrainer */
+.howto{display:grid;gap:14px}
+.howto h2,.calc-h{font-family:var(--font-display);font-weight:800;font-size:var(--fs-h2);line-height:1}
+.tips{list-style:none;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.tips li{display:grid;gap:6px;align-content:start;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--surface);min-width:0}
+.tip-k{font-weight:600}
+.tips p{font-size:var(--fs-small);color:var(--muted)}
+.tip-ex{font-family:var(--font-display);font-weight:800;font-size:1.45rem;line-height:1.15;font-variant-numeric:tabular-nums;margin-top:2px}
+.ladder{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin-top:2px}
+.ladder span{display:grid;justify-items:center;padding:6px 0;border-radius:8px;background:var(--sunk);font-family:var(--font-display);font-weight:800;font-size:1.35rem;line-height:1;font-variant-numeric:tabular-nums}
+.ladder i{font-style:normal;font-family:var(--font-body);font-weight:600;font-size:var(--fs-xs);color:var(--muted);margin-bottom:4px}
+.tk{display:grid;gap:8px;max-width:520px}
+.tk-row{display:grid;grid-template-columns:1.8rem minmax(0,1fr);gap:6px;align-items:center}
+.tk-lab{font-family:var(--font-display);font-weight:800;font-size:1.35rem;text-align:center}
+.spiek-body{display:grid;gap:10px;margin-top:12px}
+.check{display:inline-flex;align-items:center;gap:8px;font-size:var(--fs-small);cursor:pointer}
+.check input{width:18px;height:18px;margin:0;accent-color:var(--ink)}
+.spiek-wrap{overflow-x:auto}
+.spiek-t{border-collapse:collapse;width:100%;max-width:520px;font-variant-numeric:tabular-nums}
+.spiek-t th{font-size:var(--fs-xs);font-weight:600;color:var(--muted);text-align:center;padding:4px 2px;border-bottom:1px solid var(--line)}
+.spiek-t td{text-align:center;padding:4px 2px;border-bottom:1px solid var(--line);font-family:var(--font-display);font-weight:800;font-size:1.15rem;color:var(--ink)}
+.spiek-t td.n{color:var(--muted)}
+.spiek-t .gap{border-left:1.5px solid var(--line)}
+.rev{min-width:2.4em;min-height:28px;border:1px dashed var(--muted);border-radius:6px;background:transparent;color:var(--muted);font:inherit;cursor:pointer}
+.rev:hover{border-color:var(--ink);color:var(--ink)}
+.spiek-note{font-size:var(--fs-xs)}
+
+.calc-ask{display:grid;gap:10px;padding:20px}
+.calc-big{font-family:var(--font-display);font-weight:900;font-size:clamp(5rem,24vw,8rem);line-height:.85;letter-spacing:-.01em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.calc-big.enter{animation:drop .26s cubic-bezier(.2,.8,.2,1)}
+.calc-darts{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.calc-darts .dart{font-size:1.6rem}
+.calc-darts .plus{font-family:var(--font-display);font-weight:800;font-size:1.6rem;color:var(--muted)}
+.calc-ask .ask{color:var(--chalk)}
+.nopts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nopt{position:relative;display:grid;place-items:center;min-height:78px;padding:0;border:1.5px solid var(--line);border-radius:var(--r);background:var(--surface);cursor:pointer;transition:border-color .12s,transform .12s}
+.nopt b{font-family:var(--font-display);font-weight:900;font-size:2.3rem;line-height:1;font-variant-numeric:tabular-nums}
+.nopt .k{position:absolute;top:7px;left:7px;display:grid;place-items:center;width:22px;height:22px;border-radius:6px;border:1px solid var(--line);font-size:.72rem;font-weight:600;color:var(--muted)}
+.nopt:hover:not([disabled]){border-color:var(--ink);transform:translateY(-1px)}
+.nopt[disabled]{cursor:default}
+.nopt.correct{border-color:var(--green);background:var(--green-soft);color:var(--green)}
+.nopt.wrong{border-color:var(--red);background:var(--red-soft);color:var(--red)}
+.nopt.dim{opacity:.5}
+.entry{display:grid;gap:4px;justify-items:center;padding:12px;border-radius:var(--r);border:1.5px solid var(--line);background:var(--surface)}
+.entry-lab{font-size:var(--fs-xs);color:var(--muted)}
+.entry-val{font-family:var(--font-display);font-weight:900;font-size:3.2rem;line-height:1;font-variant-numeric:tabular-nums}
+.entry-val .pre{color:var(--muted);margin-right:2px}
+.entry-val .ph{color:var(--line)}
+.entry.ok{border-color:var(--green);background:var(--green-soft);color:var(--green)}
+.entry.bad{border-color:var(--red);background:var(--red-soft);color:var(--red)}
+.numpad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.key.ok-key{background:var(--ink);border-color:var(--ink);color:var(--on-ink);font-family:var(--font-body);font-size:var(--fs-small);font-weight:600}
+.timer{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px}
+.timer-track{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
+.timer-track span{display:block;height:100%;border-radius:4px;background:var(--ink);transition:width .1s linear}
+.timer.low .timer-track span{background:var(--red)}
+.timer.low b{color:var(--red)}
+.timer b{font-family:var(--font-display);font-weight:800;font-size:1.5rem;line-height:1;min-width:2ch;text-align:right;font-variant-numeric:tabular-nums}
+.sprint-why{font-size:var(--fs-small);padding:10px 12px;border-radius:10px;background:var(--red-soft)}
+.cfb{display:grid;grid-template-columns:minmax(0,1fr) min(32%,170px);gap:12px;align-items:start}
+.cfb .how{font-weight:600;margin-top:4px}
+@media (max-width:340px){.cfb{grid-template-columns:1fr}.cfb .board{max-width:170px}}
+.rv.wide{grid-template-columns:minmax(0,8rem) minmax(0,1fr) auto}
+.rv-q{font-size:1.25rem}
+
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
@@ -635,6 +707,133 @@ function pickQuestions(range,count,stats){
   var pf=wsample(fin,Math.min(fin.length,count-pb.length),w);
   return shuffle(pb.concat(pf));
 }
+/* ---------- Rekentrainer: vragen maken ---------- */
+var CALC_KINDS=['tri','dub','terug','beurt','rest'];
+function pickOne(a){return a[Math.floor(Math.random()*a.length)];}
+function factKey(m,n){return (m===3?'T':'D')+n;}
+function optLabel(q,v){return (q.prefix||'')+v;}
+
+function triExplain(n){
+  var v=3*n, l=[];
+  if(n<=10||n%10===0) l.push('T'+n+' = 3 × '+n+' = '+v+'.');
+  else l.push('T'+n+' = 3 × '+n+'. Splits '+n+' in 10 en '+(n-10)+'. 3 × 10 = 30 en 3 × '+(n-10)+' = '+(3*(n-10))+'. Samen '+v+'.');
+  if(n>=15&&n<20){ var s=[]; for(var k=20;k>=n;k--) s.push(3*k); l.push('Of tel vanaf T20 terug in stappen van 3: '+s.join(', ')+'.'); }
+  return l;
+}
+function dubExplain(n){
+  var v=2*n;
+  if(n<=10||n%10===0) return ['D'+n+' = '+n+' + '+n+' = '+v+'.'];
+  return ['D'+n+' = '+n+' + '+n+'. Verdubbel in twee stappen: 10 + 10 = 20 en '+(n-10)+' + '+(n-10)+' = '+(2*(n-10))+'. Samen '+v+'.'];
+}
+function terugExplain(m,n){
+  var v=m*n;
+  if(m===2) return ['De helft van '+v+' is '+n+', dus dubbel '+n+'. Check: '+n+' + '+n+' = '+v+'.'];
+  var l=[v+' gedeeld door 3 is '+n+', dus triple '+n+'. Check: 3 × '+n+' = '+v+'.'];
+  if(n>=14&&n<20){ var s=[]; for(var k=20;k>=n;k--) s.push(3*k+' (T'+k+')'); l.push('Of tel vanaf 60 terug in stappen van 3: '+s.join(', ')+'.'); }
+  return l;
+}
+function qTri(n){
+  var v=3*n, c=[];
+  c.push({v:2*n,p:1,why:'Dat is dubbel '+n+' (2 × '+n+'). Een triple is keer 3.'});
+  if(n>1) c.push({v:3*(n-1),p:1,why:'Dat is triple '+(n-1)+'. Je zit er 3 naast.'});
+  if(n<20) c.push({v:3*(n+1),p:1,why:'Dat is triple '+(n+1)+'. Je zit er 3 naast.'});
+  if(n>3) c.push({v:n+3,p:0,why:'Je telde 3 op. Een triple is keer 3.'});
+  c.push({v:v+10,p:0,why:'Je zit er 10 naast. Let op het tiental.'});
+  if(v>10) c.push({v:v-10,p:0,why:'Je zit er 10 naast. Let op het tiental.'});
+  c.push({v:v+1,p:0,why:'Net mis. Reken het in twee stappen.'},{v:v-1,p:0,why:'Net mis. Reken het in twee stappen.'});
+  return {type:'tri',key:factKey(3,n),m:3,n:n,answer:v,cands:c,darts:[dart(3,n)],
+    ask:{big:'T'+n,sub:'Hoeveel punten is triple '+n+'?'},short:'T'+n,explain:triExplain(n)};
+}
+function qDub(n){
+  var v=2*n, c=[];
+  c.push({v:3*n,p:1,why:'Dat is triple '+n+' (3 × '+n+'). Een dubbel is keer 2.'});
+  c.push({v:n,p:1,why:'Dat is de enkele '+n+'. De dubbelring telt twee keer.'});
+  if(n>1) c.push({v:2*(n-1),p:1,why:'Dat is dubbel '+(n-1)+'. Je zit er 2 naast.'});
+  if(n<20) c.push({v:2*(n+1),p:1,why:'Dat is dubbel '+(n+1)+'. Je zit er 2 naast.'});
+  if(n>2) c.push({v:n+2,p:0,why:'Je telde 2 op. Een dubbel is keer 2.'});
+  c.push({v:v+10,p:0,why:'Je zit er 10 naast. Let op het tiental.'});
+  if(v>10) c.push({v:v-10,p:0,why:'Je zit er 10 naast. Let op het tiental.'});
+  return {type:'dub',key:factKey(2,n),m:2,n:n,answer:v,cands:c,darts:[dart(2,n)],
+    ask:{big:'D'+n,sub:'Hoeveel punten is dubbel '+n+'?'},short:'D'+n,explain:dubExplain(n)};
+}
+function qTerug(m,n){
+  var v=m*n, c=[], P=m===3?'T':'D', other=m===3?2:3;
+  [-1,1,-2,2].forEach(function(d){ var k=n+d; if(k>=1&&k<=20) c.push({v:k,p:Math.abs(d)===1?1:0,why:P+k+' is '+(m*k)+', niet '+v+'.'}); });
+  if(v%other===0&&v/other<=20&&v/other!==n) c.push({v:v/other,p:1,why:P+(v/other)+' is '+(m*v/other)+'. Je deelde door '+other+' in plaats van door '+m+'.'});
+  var ask=m===3?{lab:'Je wilt in één pijl',big:String(v),sub:'Welke triple is '+v+' punten?'}:{lab:'Je staat op',big:String(v),sub:'Met welke dubbel gooi je uit?'};
+  return {type:'terug',key:factKey(m,n),m:m,n:n,value:v,answer:n,prefix:P,maxV:20,cands:c,darts:[dart(m,n)],ask:ask,short:v+' = '+P+'?',explain:terugExplain(m,n)};
+}
+var BEURT_POOL=[[3,20],[3,20],[3,20],[1,20],[1,20],[1,1],[1,5],[3,1],[3,5],[3,19],[3,19],[1,19],[1,7],[1,3],[3,7],[3,3],[3,18],[1,18],[3,17],[1,17],[1,25],[2,25],[2,20],[2,16],[3,16],[1,16],[3,15],[1,12]];
+function beurtExplain(ds){
+  var vals=ds.map(val), sum=vals.reduce(function(a,b){return a+b;},0);
+  var l=[keyOf(ds).split(' ').join(' + ')+' = '+vals.join(' + ')+' = '+sum+'.'];
+  var s=vals.slice().sort(function(a,b){return b-a;});
+  if(s[1]>=20) l.push('Tel eerst de grote getallen op: '+s[0]+' + '+s[1]+' = '+(s[0]+s[1])+'. Dan + '+s[2]+' = '+sum+'.');
+  var near=vals.filter(function(x){return x>=51&&x<60;})[0];
+  if(near) l.push('Handig: '+near+' is 60 − '+(60-near)+'.');
+  return l;
+}
+function qBeurt(){
+  var ds=[0,1,2].map(function(){var p=pickOne(BEURT_POOL);return dart(p[0],p[1]);});
+  if(!ds.some(function(d){return d.m===3;})) ds[0]=dart(3,pickOne([20,19,18,17]));
+  var sum=sumOf(ds), c=[];
+  ds.forEach(function(d){
+    if(d.m===3){ c.push({v:sum-d.n,p:1,why:'Je rekende '+label(d)+' als dubbel: '+(2*d.n)+' in plaats van '+(3*d.n)+'.'}); c.push({v:sum-2*d.n,p:1,why:'Je telde '+label(d)+' als enkele '+d.n+'.'}); }
+    if(d.m===2&&d.n!==25) c.push({v:sum-d.n,p:1,why:'Je telde '+label(d)+' als enkele '+d.n+'.'});
+  });
+  c.push({v:sum+10,p:0,why:'Je zit er 10 naast. Tel de tientallen nog eens.'},{v:sum-10,p:0,why:'Je zit er 10 naast. Tel de tientallen nog eens.'},
+    {v:sum+3,p:0,why:'Je zit er 3 naast. Reken de triples nog eens na.'},{v:sum-3,p:0,why:'Je zit er 3 naast. Reken de triples nog eens na.'},
+    {v:sum+1,p:0,why:'Net mis.'},{v:sum-1,p:0,why:'Net mis.'});
+  return {type:'beurt',key:null,darts:ds,answer:sum,cands:c,ask:{lab:'Deze beurt',darts:ds,sub:'Hoeveel punten samen?'},short:keyOf(ds).split(' ').join(' + '),explain:beurtExplain(ds)};
+}
+var REST_POOL=[[3,20],[3,20],[3,19],[3,18],[3,17],[1,20],[1,19],[2,25],[1,25],[3,16],[3,15]];
+function restExplain(start,ds){
+  var l=[], cur=start;
+  ds.forEach(function(d){
+    var v=val(d), nx=cur-v, up=Math.ceil(v/10)*10, diff=up-v;
+    if(diff>0&&diff<=3&&v>=17) l.push(label(d)+' is '+v+'. Haal '+up+' eraf en tel '+diff+' erbij: '+cur+' − '+up+' = '+(cur-up)+', + '+diff+' = '+nx+'.');
+    else l.push(label(d)+' is '+v+'. '+cur+' − '+v+' = '+nx+'.');
+    cur=nx;
+  });
+  return l;
+}
+function qRest(){
+  var ds=[pickOne(REST_POOL)]; if(Math.random()<0.35) ds.push(pickOne(REST_POOL));
+  ds=ds.map(function(p){return dart(p[0],p[1]);});
+  var tot=sumOf(ds), lo=Math.max(tot+2,41), hi=180;
+  var start=lo+Math.floor(Math.random()*(hi-lo+1)), rest=start-tot, c=[];
+  ds.forEach(function(d){ if(d.m===3) c.push({v:rest+d.n,p:1,why:'Je trok '+label(d)+' af als dubbel: '+(2*d.n)+' in plaats van '+(3*d.n)+'.'}); });
+  c.push({v:rest+10,p:1,why:'Je zit er 10 naast. Let op bij het aftrekken over het tiental heen.'},{v:rest-10,p:1,why:'Je zit er 10 naast. Let op bij het aftrekken over het tiental heen.'},
+    {v:rest+3,p:0,why:'Je zit er 3 naast.'},{v:rest-3,p:0,why:'Je zit er 3 naast.'},{v:rest+1,p:0,why:'Net mis.'},{v:rest-1,p:0,why:'Net mis.'},
+    {v:start+tot,p:-1,why:'Je telde op in plaats van af.'});
+  return {type:'rest',key:null,start:start,darts:ds,answer:rest,cands:c,ask:{lab:'Je staat op',big:String(start),dartsLab:'en gooit',darts:ds,sub:'Wat blijft er over?'},
+    short:start+' − '+keyOf(ds).split(' ').join(' − '),explain:restExplain(start,ds)};
+}
+function calcOpts(q){
+  var out=[{v:q.answer,label:optLabel(q,q.answer),ok:true}], seen={}; seen[q.answer]=1;
+  function ok(v){return v>0&&!seen[v]&&(!q.maxV||v<=q.maxV);}
+  var hi=shuffle(q.cands.filter(function(c){return c.p===1;})), lo=shuffle(q.cands.filter(function(c){return c.p===0;}));
+  hi.concat(lo).forEach(function(c){ if(out.length<4&&ok(c.v)){ seen[c.v]=1; out.push({v:c.v,label:optLabel(q,c.v),ok:false,why:c.why}); } });
+  for(var k=1;out.length<4&&k<40;k++){ [q.answer+k,q.answer-k].forEach(function(v){ if(out.length<4&&ok(v)){ seen[v]=1; out.push({v:v,label:optLabel(q,v),ok:false,why:'Net mis. Reken het nog eens in stappen.'}); } }); }
+  return shuffle(out);
+}
+function diagnose(q,v){
+  for(var i=0;i<q.cands.length;i++){ if(q.cands[i].v===v) return q.cands[i].why; }
+  if(q.type==='terug'&&v>20) return 'Typ het nummer van het vak, dus '+q.n+' voor '+q.prefix+q.n+'.';
+  return 'Je zit er '+Math.abs(v-q.answer)+' naast.';
+}
+function finalizeQ(q){ var u={}; q.cands=q.cands.filter(function(c){ if(c.v===q.answer||u[c.v]) return false; u[c.v]=1; return true; }); q.opts=calcOpts(q); q.done=false; q.ok=false; q.typed=''; q.given=null; q.why=''; return q; }
+// w(key) geeft een gewicht per dubbel of triple: vaker vragen wat nog niet goed gaat
+function makeCalcQ(type,w,avoid){
+  var t=type==='mix'?pickOne(CALC_KINDS):type;
+  if(t==='beurt') return finalizeQ(qBeurt());
+  if(t==='rest') return finalizeQ(qRest());
+  var m=t==='tri'?3:(t==='dub'?2:(Math.random()<0.6?3:2));
+  var ns=[]; for(var k=1;k<=20;k++){ if(!avoid||!avoid[factKey(m,k)]) ns.push(k); }
+  if(!ns.length) for(k=1;k<=20;k++) ns.push(k);
+  var n=wsample(ns,1,function(x){return (w?w(factKey(m,x)):1)*(x>=11?1.5:1);})[0];
+  return finalizeQ(t==='tri'?qTri(n):(t==='dub'?qDub(n):qTerug(m,n)));
+}
 /*LOGIC-END*/
 
 /* ---------- Opslag (alleen in deze browser) ---------- */
@@ -643,7 +842,10 @@ function loadStore(){
   var s=null;
   try{ s=JSON.parse(localStorage.getItem(STORE_KEY)); }catch(e){ s=null; }
   if(!s||typeof s!=='object') s={};
-  s.settings=Object.assign({mode:'mc',range:'51-100',count:10,spread:false},s.settings||{});
+  s.settings=Object.assign({mode:'mc',range:'51-100',count:10,spread:false,section:'finish'},s.settings||{});
+  s.calc=s.calc&&typeof s.calc==='object'?s.calc:{};
+  s.calc.facts=s.calc.facts||{}; s.calc.best=s.calc.best||{};
+  s.calc.settings=Object.assign({type:'tri',answer:'mc',count:10},s.calc.settings||{});
   s.stats=s.stats&&typeof s.stats==='object'?s.stats:{};
   return s;
 }
@@ -657,7 +859,8 @@ var BUST={geenDubbel:1,onder:1,een:1};
 
 /* ---------- Staat ---------- */
 var app=document.getElementById('app');
-var view={screen:'home',mapTab:'kaart',mapSel:null};
+var view={screen:'home',mapTab:'kaart',mapSel:null,tkSel:null,spiekOpen:false};
+var lastCalcKey=null;
 var round=null;
 var mod=0;          // 0 = enkel, 2 = dubbel, 3 = triple
 var justThrew=false;
@@ -678,7 +881,8 @@ var ICON={
   cross:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>',
   mc:'<svg class="m-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="4.5" rx="1.5"/><rect x="3.5" y="9.75" width="17" height="4.5" rx="1.5"/><rect x="3.5" y="16" width="17" height="4.5" rx="1.5"/></svg>',
   keys:'<svg class="m-svg" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="5" height="5" rx="1.2"/><rect x="9.5" y="3.5" width="5" height="5" rx="1.2"/><rect x="15.5" y="3.5" width="5" height="5" rx="1.2"/><rect x="3.5" y="9.5" width="5" height="5" rx="1.2"/><rect x="9.5" y="9.5" width="5" height="5" rx="1.2"/><rect x="15.5" y="9.5" width="5" height="5" rx="1.2"/><rect x="3.5" y="15.5" width="5" height="5" rx="1.2"/><rect x="9.5" y="15.5" width="5" height="5" rx="1.2"/><rect x="15.5" y="15.5" width="5" height="5" rx="1.2"/></svg>',
-  board:'<svg class="m-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.8"/></svg>'
+  board:'<svg class="m-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="1.8"/></svg>',
+  clock:'<svg class="m-svg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 2M9.5 3.5h5"/></svg>'
 };
 
 /* Dartbord als SVG */
@@ -766,7 +970,20 @@ function renderHome(){
   var heroBoard=boardSVG({decor:true,dartScale:2.1,darts:[{x:-8,y:-110},{x:7,y:-104},{x:3,y:2}]});
 
   var html='<div class="wrap">';
-  html+='<header class="topbar"><div class="brand">'+boardSVG({mini:true,decor:true})+'<span>Finishquiz</span></div><span class="tb-meta">51 tot 170</span></header>';
+  var reken=st.section==='reken';
+  html+='<header class="topbar"><div class="brand">'+boardSVG({mini:true,decor:true})+'<span>Finishquiz</span></div><span class="tb-meta">'+(reken?'Rekenen':'51 tot 170')+'</span></header>';
+  html+='<nav class="sections" aria-label="Onderdeel"><button type="button" class="sec" data-act="section" data-sec="finish" data-k="sec-finish" aria-pressed="'+(!reken)+'">Uitgooien</button>'+
+    '<button type="button" class="sec" data-act="section" data-sec="reken" data-k="sec-reken" aria-pressed="'+reken+'">Rekenen</button></nav>';
+  if(reken){
+    var p17=centerPoint(dart(3,17));
+    html+='<section class="slate hero"><div class="hero-text"><h1>Reken vlot met dubbels en triples</h1>'+
+      '<div class="fish">'+chips([dart(3,17)],'xs')+'<span class="eq">=</span><span class="fish-n">51</span></div>'+
+      '<p class="fish-cap">Triple 17 is 3 × 17. Dat is 30 + 21.</p></div>'+
+      '<div class="hero-board">'+boardSVG({decor:true,dartScale:2.1,darts:[{x:p17.x-6,y:p17.y-2},{x:p17.x+5,y:p17.y+3}]})+'</div></section>';
+    html+='<p class="lede">Een dubbel is keer 2, een triple keer 3. Wie dat vlot kan, weet sneller wat er overblijft. Oefen het hier tot het vanzelf gaat.</p>';
+    html+=installTip();
+    return html+renderReken()+'</div>';
+  }
   html+='<section class="slate hero"><div class="hero-text"><h1>Leer uitgooien van 51 tot 170</h1>'+
     '<div class="fish"><span class="fish-n">170</span>'+chips(parseRoute(ROUTES[170]),'xs')+'</div>'+
     '<p class="fish-cap">De big fish: 60 + 60 + 50, de hoogste finish.</p></div>'+
@@ -1042,11 +1259,223 @@ function renderResult(){
   return html;
 }
 
+/* ---------- Rekentrainer: schermen ---------- */
+var cr=null, crTimer=null, crLock=false;
+var spiekHidden=false, spiekShown={};
+var CALC_TYPE_INFO={tri:['Triples','T17 = ?'],dub:['Dubbels','D17 = ?'],terug:['Terugzoeken','51 = welke triple?'],beurt:['Beurt optellen','T20 + 5 + T19'],rest:['Rest uitrekenen','121 − T20'],mix:['Alles door elkaar','Een mix van alles']};
+function radioChoice(name,value,inner,on,extraCls,disabled){
+  var id=name+'-'+value;
+  return '<label class="choice'+(on?' on':'')+(extraCls?' '+extraCls:'')+(disabled?' off':'')+'" for="'+id+'"><input type="radio" name="'+name+'" id="'+id+'" value="'+value+'"'+(on?' checked':'')+(disabled?' disabled':'')+'>'+inner+'</label>';
+}
+function renderReken(){
+  var cs=store.calc.settings, best=store.calc.best[cs.type];
+  var h='<section class="howto" aria-labelledby="howto-h"><h2 id="howto-h">Zo reken je het uit</h2><ol class="tips">'+
+    '<li><span class="tip-k">Dubbel is keer 2</span><p>Tel het getal bij zichzelf op.</p><div class="tip-ex">D17 = 17 + 17 = 34</div></li>'+
+    '<li><span class="tip-k">Triple is keer 3</span><p>Doe het in twee stappen: eerst de tien, dan de rest.</p><div class="tip-ex">T17 = 30 + 21 = 51</div></li>'+
+    '<li><span class="tip-k">Tel terug vanaf 60</span><p>T20 is 60. Elk vakje lager is 3 minder.</p><div class="ladder">'+[20,19,18,17].map(function(n){return '<span><i>T'+n+'</i>'+(3*n)+'</span>';}).join('')+'</div></li>'+
+    '<li><span class="tip-k">Aftrekken met een omweg</span><p>Haal een rond getal eraf en tel het verschil er weer bij.</p><div class="tip-ex">121 − 57 = 121 − 60 + 3 = 64</div></li></ol></section>';
+  h+='<form class="setup" id="csetup" novalidate>';
+  h+='<fieldset><legend>Wat wil je oefenen?</legend><div class="choices">'+['tri','dub','terug','beurt','rest','mix'].map(function(t){var i=CALC_TYPE_INFO[t];return radioChoice('ctype',t,'<span class="c-title">'+i[0]+'</span><span class="c-sub">'+i[1]+'</span>',cs.type===t);}).join('')+'</div></fieldset>';
+  var modes=[['mc','Meerkeuze','Kies uit vier antwoorden.',ICON.mc],['typ','Zelf intikken','Typ het antwoord. Lastiger, en je onthoudt het beter.',ICON.keys],['sprint','Sprint','Zoveel mogelijk goed in 1 minuut.'+(best?' Jouw record: '+best+'.':''),ICON.clock]];
+  h+='<fieldset><legend>Hoe wil je antwoorden?</legend><div class="modes">'+modes.map(function(m){return radioChoice('canswer',m[0],'<span class="m-ic">'+m[3]+'</span><span class="m-txt"><span class="c-title">'+m[1]+'</span><span class="c-sub">'+m[2]+'</span></span>',cs.answer===m[0],'mode');}).join('')+'</div></fieldset>';
+  if(cs.answer!=='sprint') h+='<fieldset><legend>Hoeveel vragen?</legend><div class="counts">'+[10,20].map(function(c){return radioChoice('ccount',String(c),'<span class="c-num">'+c+'</span>',cs.count===c);}).join('')+'</div></fieldset>';
+  h+='<button type="submit" class="btn primary big" data-k="cstart">'+(cs.answer==='sprint'?'Start de sprint':'Start met rekenen')+'</button></form>';
+  return h+tafelkaart()+spiek();
+}
+function tafelkaart(){
+  var f=store.calc.facts, g=0, b=0;
+  Object.keys(f).forEach(function(k){ if(f[k].l===1) g++; else b++; });
+  var line=(g||b)?g+' van de 40 dubbels en triples laatst goed, '+b+' laatst fout.':'Nog niets geoefend. Na elke vraag over een dubbel of triple kleurt de kaart mee.';
+  function row(m){
+    var cells='';
+    for(var n=1;n<=20;n++){
+      var k=factKey(m,n), st=f[k], cls=st?(st.l===1?'ok':'bad'):'';
+      cells+='<button type="button" class="cell '+cls+(view.tkSel===k?' sel':'')+'" data-act="tk" data-c="'+k+'" data-k="tk-'+k+'" aria-label="'+(m===3?'Triple ':'Dubbel ')+n+(st?(st.l===1?', laatst goed':', laatst fout'):'')+'">'+n+'</button>';
+    }
+    return '<div class="tk-row"><span class="tk-lab" aria-hidden="true">'+(m===3?'T':'D')+'</span><div class="grid">'+cells+'</div></div>';
+  }
+  var sel=view.tkSel, det;
+  if(!sel) det='<span class="muted">Tik op een vakje om de uitkomst te zien.</span>';
+  else { var m=sel[0]==='T'?3:2, n=+sel.slice(1), st=f[sel]; det='<b>'+sel+' = '+(m*n)+'</b><span class="muted">'+m+' × '+n+(st?', '+st.g+' keer goed, '+st.f+' keer fout':', nog niet geoefend')+'</span>'; }
+  return '<section class="mapsec" aria-labelledby="tk-h"><div class="sec-head"><h2 id="tk-h">Jouw tafelkaart</h2></div><p class="muted">'+line+'</p>'+
+    '<div class="tk">'+row(2)+row(3)+'</div><div class="detail" aria-live="polite">'+det+'</div>'+
+    '<ul class="legend"><li><i class="sw ok"></i>Laatst goed</li><li><i class="sw bad"></i>Laatst fout</li><li><i class="sw"></i>Nog niet geoefend</li></ul></section>';
+}
+function spiek(){
+  function cell(k,v){ if(!spiekHidden||spiekShown[k]) return '<td>'+v+'</td>'; return '<td><button type="button" class="rev" data-act="rev" data-c="'+k+'" aria-label="Toon '+k+'">?</button></td>'; }
+  var rows='';
+  for(var n=1;n<=10;n++){ var m=n+10; rows+='<tr><td class="n">'+n+'</td>'+cell('D'+n,2*n)+cell('T'+n,3*n)+'<td class="n gap">'+m+'</td>'+cell('D'+m,2*m)+cell('T'+m,3*m)+'</tr>'; }
+  return '<details class="rules spiek" id="spiek"'+(view.spiekOpen?' open':'')+'><summary>Spiekbriefje: alle dubbels en triples</summary>'+
+    '<div class="spiek-body"><label class="check" for="hideans"><input type="checkbox" id="hideans" name="hideans"'+(spiekHidden?' checked':'')+'>Verberg de uitkomsten en test jezelf</label>'+
+    '<div class="spiek-wrap"><table class="spiek-t"><thead><tr><th>Getal</th><th>Dubbel</th><th>Triple</th><th class="gap">Getal</th><th>Dubbel</th><th>Triple</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+    '<p class="muted spiek-note">De bull: de buitenste ring telt 25, de binnenste 50. De binnenste telt als dubbel. Een triple bull bestaat niet.</p></div></details>';
+}
+
+function calcAsk(q){
+  var a=q.ask, parts=[a.lab||'',a.big||'',a.dartsLab||'',a.darts?keyOf(a.darts):'',a.sub].filter(Boolean).join(' ');
+  var h='<section class="slate calc-ask" tabindex="-1" id="score-focus" aria-label="'+esc(parts)+'">';
+  if(a.lab) h+='<div class="lab">'+a.lab+'</div>';
+  if(a.big) h+='<div class="calc-big" data-key="c'+cr.i+'">'+a.big+'</div>';
+  if(a.darts) h+='<div class="calc-darts">'+(a.dartsLab?'<span class="lab">'+a.dartsLab+'</span>':'')+a.darts.map(function(d,i){return (i&&q.type==='beurt'?'<span class="plus">+</span>':'')+chip(d);}).join('')+'</div>';
+  return h+'<p class="ask">'+a.sub+'</p></section>';
+}
+function calcOptsBlock(q){
+  return '<div class="nopts">'+q.opts.map(function(o,i){
+    var cls='';
+    if(q.done){ if(o.ok) cls=' correct'; else if(q.given===o.v) cls=' wrong'; else cls=' dim'; }
+    return '<button type="button" class="nopt'+cls+'" data-act="cpick" data-i="'+i+'" data-k="nopt-'+i+'"'+(q.done?' disabled':'')+' aria-label="Antwoord '+(i+1)+': '+esc(o.label)+'"><span class="k" aria-hidden="true">'+(i+1)+'</span><b>'+esc(o.label)+'</b></button>';
+  }).join('')+'</div>';
+}
+function calcTypedBlock(q){
+  var shown=q.done?String(q.given):q.typed;
+  var h='<div class="entry'+(q.done?(q.ok?' ok':' bad'):'')+'" aria-live="polite"><span class="entry-lab">Jouw antwoord</span><div class="entry-val">'+
+    (q.prefix?'<span class="pre">'+q.prefix+'</span>':'')+(shown?esc(shown):'<span class="ph">?</span>')+'</div></div>';
+  if(q.done) return h;
+  var keys='';
+  [1,2,3,4,5,6,7,8,9].forEach(function(n){ keys+='<button type="button" class="key" data-act="cnum" data-n="'+n+'" data-k="cnum-'+n+'">'+n+'</button>'; });
+  keys+='<button type="button" class="key wis" data-act="cdel" data-k="cdel"'+(q.typed?'':' disabled')+'>Wis</button>'+
+    '<button type="button" class="key" data-act="cnum" data-n="0" data-k="cnum-0">0</button>'+
+    '<button type="button" class="key ok-key" data-act="cok" data-k="cok"'+(q.typed?'':' disabled')+'>Controleer</button>';
+  return h+'<div class="numpad">'+keys+'</div><p class="kbd-hint">Toetsenbord: typ het getal en druk op Enter.</p>';
+}
+function calcFeedback(q){
+  var l=[];
+  if(!q.ok){ l.push('<p>'+esc(q.why)+'</p>'); l.push('<p>Het goede antwoord is <b>'+esc(optLabel(q,q.answer))+'</b>.</p>'); }
+  l.push('<p class="how">Zo reken je het:</p>');
+  q.explain.forEach(function(x){ l.push('<p>'+esc(x)+'</p>'); });
+  var board=q.darts?boardSVG({route:q.darts,aria:'Dartbord met '+keyOf(q.darts)+' gemarkeerd'}):'';
+  return '<section class="fb '+(q.ok?'ok':'bad')+'" aria-live="polite"><div class="fb-head">'+(q.ok?ICON.check:ICON.cross)+(q.ok?'Goed':'Fout')+'</div>'+
+    '<div class="cfb"><div class="fb-lines">'+l.join('')+'</div>'+board+'</div></section>';
+}
+function renderCalc(){
+  var q=cr.qs[cr.i], n=cr.qs.length;
+  var goed=cr.qs.filter(function(x){return x.done&&x.ok;}).length;
+  var h='<div class="wrap quiz calc">';
+  h+='<header class="qbar"><button type="button" class="btn ghost" data-act="cstop" data-k="cstop">Stop</button>'+
+    '<div class="qcount">'+(cr.sprint?'Sprint, '+CALC_TYPE_INFO[cr.type][0].toLowerCase():'Vraag '+(cr.i+1)+' van '+n)+'</div><div class="qgood">'+goed+' goed</div></header>';
+  if(cr.sprint){
+    var left=Math.max(0,cr.endAt-Date.now());
+    h+='<div class="timer'+(left<10000?' low':'')+'" id="timer"><div class="timer-track"><span id="timer-bar" style="width:'+(left/600).toFixed(1)+'%"></span></div><b id="timer-s" role="timer">'+Math.ceil(left/1000)+'</b></div>';
+  } else {
+    h+='<ol class="strip" aria-hidden="true" style="grid-template-columns:repeat('+n+',minmax(0,1fr))">'+
+      cr.qs.map(function(x,i){return '<li class="'+(x.done?(x.ok?'ok':'bad'):'')+(i===cr.i&&!x.done?' now':'')+'"></li>';}).join('')+'</ol>';
+  }
+  h+=calcAsk(q);
+  h+=cr.answer==='typ'?calcTypedBlock(q):calcOptsBlock(q);
+  if(q.done&&!cr.sprint){
+    h+=calcFeedback(q);
+    h+='<div class="nextbar"><button type="button" class="btn primary big" data-act="cnext" data-k="cnext">'+(cr.i<n-1?'Volgende vraag':'Bekijk de uitslag')+'</button></div>';
+  } else if(q.done&&!q.ok){
+    h+='<p class="sprint-why">'+esc(q.why)+' Goed is <b>'+esc(optLabel(q,q.answer))+'</b>.</p>';
+  } else h+='<div class="endpad"></div>';
+  return h+'</div>';
+}
+function renderCalcResult(){
+  var done=cr.qs.filter(function(q){return q.done;});
+  var g=done.filter(function(q){return q.ok;}).length, n=done.length;
+  var wrong=done.filter(function(q){return !q.ok;}), pct=n?g/n:0;
+  var verdict;
+  if(cr.sprint){
+    verdict=cr.newBest?'Nieuw record.':(cr.best?'Jouw record is '+cr.best+'.':'');
+    if(n) verdict+=' Van je '+n+' antwoorden '+plural(g,'was','waren')+' er '+g+' goed.';
+  } else verdict=pct===1?'Foutloos. Probeer het eens met zelf intikken of een sprint.':(pct>=0.8?'Sterk gerekend.':(pct>=0.5?'Op de goede weg. Oefen je fouten nog een keer.':'Blijf oefenen. Lees bij elke fout hoe je het uitrekent.'));
+  var list=cr.sprint?wrong:done;
+  var rows=list.map(function(q){
+    return '<li class="rv wide '+(q.ok?'ok':'bad')+'"><b class="rv-s rv-q">'+esc(q.short)+'</b><div class="rv-main"><div><span class="muted">Jij:</span> '+esc(optLabel(q,q.given))+'</div>'+
+      (q.ok?'':'<div><span class="muted">Goed:</span> '+esc(optLabel(q,q.answer))+'</div>')+'</div>'+
+      '<span class="rv-mark" role="img" aria-label="'+(q.ok?'Goed':'Fout')+'">'+(q.ok?ICON.check:ICON.cross)+'</span></li>';
+  }).join('');
+  var h='<div class="wrap">';
+  h+='<header class="topbar"><div class="brand">'+boardSVG({mini:true,decor:true})+'<span>Finishquiz</span></div><span class="tb-meta">Rekenen</span></header>';
+  h+='<section class="slate res" tabindex="-1" id="result-focus"><div class="lab">Uitslag '+CALC_TYPE_INFO[cr.type][0].toLowerCase()+'</div><div class="bigres"><b>'+g+'</b><span>'+(cr.sprint?'goed in 1 minuut':'van '+n+' goed')+'</span></div><p class="verdict">'+verdict+'</p></section>';
+  if(rows) h+=(cr.sprint?'<h2 class="calc-h">Deze gingen fout</h2>':'')+'<ul class="review" aria-label="Jouw antwoorden">'+rows+'</ul>';
+  h+='<div class="actions">'+(wrong.length?'<button type="button" class="btn primary big" data-act="cretry" data-k="cretry">Oefen deze '+wrong.length+' '+plural(wrong.length,'fout','fouten')+' opnieuw</button>':'')+
+    '<div class="row"><button type="button" class="btn line" data-act="cagain" data-k="cagain">'+(cr.sprint?'Nog een sprint':'Nieuwe ronde')+'</button><button type="button" class="btn line" data-act="chome" data-k="chome">Naar start</button></div></div>';
+  return h+'</div>';
+}
+
+/* ---------- Rekentrainer: acties ---------- */
+function calcWeight(k){ var st=store.calc.facts[k]; return !st?3:(st.l===0?4:1); }
+function startCalc(list){
+  var cs=store.calc.settings, sprint=!list&&cs.answer==='sprint';
+  var qs=list;
+  if(!qs){
+    qs=[]; var seen={};
+    var count=sprint?1:cs.count;
+    for(var i=0;i<count;i++){ var q=makeCalcQ(cs.type,calcWeight,seen); if(q.key) seen[q.key]=1; qs.push(q); }
+  }
+  if(!qs.length) return;
+  stopTimer();
+  cr={type:cs.type,answer:sprint?'mc':(cs.answer==='sprint'?'mc':cs.answer),sprint:sprint,qs:qs,i:0,endAt:sprint?Date.now()+60000:0};
+  view.screen='calc'; render(); toTop(); focusEl('score-focus');
+  if(sprint) startTimer();
+}
+function recordFact(q){
+  if(!q.key) return;
+  var st=store.calc.facts[q.key]||{g:0,f:0,l:0};
+  if(q.ok){st.g++;st.l=1;} else {st.f++;st.l=0;}
+  store.calc.facts[q.key]=st; saveStore();
+}
+function calcAnswer(v){
+  var q=cr.qs[cr.i]; if(q.done||crLock) return;
+  if(cr.sprint&&Date.now()>=cr.endAt){ finishCalc(); return; }
+  q.done=true; q.given=v; q.ok=v===q.answer; q.why=q.ok?'':diagnose(q,v);
+  recordFact(q); render();
+  if(cr.sprint){
+    crLock=true;
+    setTimeout(function(){
+      crLock=false;
+      if(!cr||!cr.sprint||view.screen!=='calc') return;
+      if(Date.now()>=cr.endAt){ finishCalc(); return; }
+      var avoid={}; if(q.key) avoid[q.key]=1;
+      cr.qs.push(makeCalcQ(cr.type,calcWeight,avoid)); cr.i++; render();
+    },q.ok?280:1400);
+  } else revealFeedback();
+}
+function calcNext(){
+  if(cr.i<cr.qs.length-1){ cr.i++; render(); toTop(); focusEl('score-focus'); }
+  else finishCalc();
+}
+function finishCalc(){
+  stopTimer();
+  if(cr.sprint){
+    var g=cr.qs.filter(function(q){return q.done&&q.ok;}).length, prev=store.calc.best[cr.type]||0;
+    cr.best=prev; cr.newBest=g>prev&&g>0;
+    if(cr.newBest){ store.calc.best[cr.type]=g; saveStore(); }
+  }
+  view.screen='calcResult'; render(); toTop(); focusEl('result-focus');
+}
+function calcStop(){
+  if(cr&&cr.qs.some(function(q){return q.done;})) finishCalc();
+  else calcHome();
+}
+function calcHome(){ stopTimer(); cr=null; view.screen='home'; render(); toTop(); }
+function startTimer(){ stopTimer(); crTimer=setInterval(tick,100); }
+function stopTimer(){ if(crTimer){ clearInterval(crTimer); crTimer=null; } }
+function tick(){
+  if(!cr||!cr.sprint||view.screen!=='calc'){ stopTimer(); return; }
+  var left=Math.max(0,cr.endAt-Date.now());
+  var bar=document.getElementById('timer-bar'), s=document.getElementById('timer-s'), wrap=document.getElementById('timer');
+  if(bar) bar.style.width=(left/600).toFixed(1)+'%';
+  if(s) s.textContent=String(Math.ceil(left/1000));
+  if(wrap) wrap.classList.toggle('low',left<10000);
+  if(left<=0&&!crLock) finishCalc();
+}
+function calcKey(e,k,onControl){
+  var q=cr.qs[cr.i];
+  if(q.done){ if(!cr.sprint&&(k==='Enter'||k===' ')&&!onControl){ e.preventDefault(); calcNext(); } return; }
+  if(cr.answer==='typ'){
+    if(/^[0-9]$/.test(k)){ e.preventDefault(); if(q.typed.length<3){ q.typed+=k; render(); } }
+    else if(k==='Backspace'){ e.preventDefault(); q.typed=q.typed.slice(0,-1); render(); }
+    else if(k==='Enter'&&!onControl&&q.typed){ e.preventDefault(); calcAnswer(+q.typed); }
+  } else if(/^[1-4]$/.test(k)){ e.preventDefault(); var o=q.opts[+k-1]; if(o) calcAnswer(o.v); }
+}
+
 /* ---------- Render, focus en aftel-animatie ---------- */
 function render(){
   var ae=document.activeElement, keep=null;
   if(ae&&ae!==document.body&&app.contains(ae)) keep={id:ae.id,k:ae.getAttribute('data-k')};
-  app.innerHTML=view.screen==='quiz'?renderQuiz():(view.screen==='result'?renderResult():renderHome());
+  app.innerHTML=view.screen==='quiz'?renderQuiz():(view.screen==='result'?renderResult():(view.screen==='calc'?renderCalc():(view.screen==='calcResult'?renderCalcResult():renderHome())));
   justThrew=false;
   if(keep){
     var el=keep.id?document.getElementById(keep.id):(keep.k?app.querySelector('[data-k="'+keep.k+'"]'):null);
@@ -1055,6 +1484,9 @@ function render(){
   afterRender();
 }
 function afterRender(){
+  var cb=app.querySelector('.calc-big[data-key]');
+  if(cb&&!reduceMotion&&cb.getAttribute('data-key')!==lastCalcKey) cb.classList.add('enter');
+  lastCalcKey=cb?cb.getAttribute('data-key'):null;
   var el=app.querySelector('.score[data-val]');
   if(!el){ shown={key:null,val:null}; return; }
   var key=el.getAttribute('data-key'), to=+el.getAttribute('data-val');
@@ -1224,6 +1656,18 @@ app.addEventListener('click',function(e){
     case 'retry': startRound(shuffle(round.qs.filter(function(q){return q.done&&!q.ok;}).map(function(q){return q.s;}))); break;
     case 'again': startRound(); break;
     case 'home': goHome(); break;
+    case 'section': store.settings.section=b.getAttribute('data-sec'); saveStore(); render(); break;
+    case 'cpick': var cq=cr.qs[cr.i], co=cq.opts[+b.getAttribute('data-i')]; if(co) calcAnswer(co.v); break;
+    case 'cnum': var tq=cr.qs[cr.i]; if(!tq.done&&tq.typed.length<3){ tq.typed+=b.getAttribute('data-n'); render(); } break;
+    case 'cdel': var dq=cr.qs[cr.i]; dq.typed=dq.typed.slice(0,-1); render(); break;
+    case 'cok': var oq=cr.qs[cr.i]; if(oq.typed) calcAnswer(+oq.typed); break;
+    case 'cnext': calcNext(); break;
+    case 'cstop': calcStop(); break;
+    case 'cretry': startCalc(shuffle(cr.qs.filter(function(q){return q.done&&!q.ok;})).map(function(q){return finalizeQ(q);})); break;
+    case 'cagain': startCalc(); break;
+    case 'chome': calcHome(); break;
+    case 'tk': var tk=b.getAttribute('data-c'); view.tkSel=view.tkSel===tk?null:tk; render(); break;
+    case 'rev': spiekShown[b.getAttribute('data-c')]=true; render(); break;
     case 'install': if(installEvt){ var ev=installEvt; installEvt=null; ev.prompt(); (ev.userChoice||Promise.resolve()).then(function(){ render(); }); } break;
     case 'install-x': try{ localStorage.setItem(INSTALL_KEY,'weg'); }catch(err){} render(); break;
   }
@@ -1235,9 +1679,14 @@ app.addEventListener('change',function(e){
     saveStore(); render();
   } else if(t.name==='spread'){
     store.settings.spread=t.checked; saveStore(); render();
+  } else if(t.name==='ctype'||t.name==='canswer'||t.name==='ccount'){
+    store.calc.settings[t.name.slice(1)]=t.name==='ccount'?+t.value:t.value; saveStore(); render();
+  } else if(t.name==='hideans'){
+    spiekHidden=t.checked; spiekShown={}; render();
   }
 });
-app.addEventListener('submit',function(e){ e.preventDefault(); startRound(); });
+app.addEventListener('submit',function(e){ e.preventDefault(); if(e.target&&e.target.id==='csetup') startCalc(); else startRound(); });
+app.addEventListener('toggle',function(e){ if(e.target&&e.target.id==='spiek') view.spiekOpen=e.target.open; },true);
 
 // Toetsenbord: 1-4 kiest in meerkeuze; bij gooien t/d/s, cijfers, b voor bull, Backspace wist
 var buf='', bufTimer=null;
@@ -1250,9 +1699,10 @@ function flushBuf(){
 }
 document.addEventListener('keydown',function(e){
   if(e.metaKey||e.ctrlKey||e.altKey) return;
+  var onControl=e.target&&e.target.closest&&e.target.closest('button,input,select,textarea,summary,a');
+  if(view.screen==='calc'&&cr){ calcKey(e,e.key,onControl); return; }
   if(view.screen!=='quiz'||!round) return;
   var q=cur(), k=e.key;
-  var onControl=e.target&&e.target.closest&&e.target.closest('button,input,select,textarea,summary,a');
   if(q.done){
     if((k==='Enter'||k===' ')&&!onControl){ e.preventDefault(); nextQ(); }
     return;
